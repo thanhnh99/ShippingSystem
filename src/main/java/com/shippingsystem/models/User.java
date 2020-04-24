@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
+@Table
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
