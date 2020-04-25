@@ -22,5 +22,8 @@ public class Role {
     private String name;
 
     @ManyToMany
+    @JoinTable(name = "user_role",//tạo ra bằng join
+        joinColumns = @JoinColumn(name = "role_id"),
+        inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Collection<User> users;
 }

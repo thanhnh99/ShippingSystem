@@ -7,14 +7,14 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-@Data
+@Data//lombok
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table
+@Entity//Đánh dấu đây là table trong db
+@Table//config db. Không có gì mặc định là defaule
 public class Order {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id//đánh dấu primary key trong db
+    @GeneratedValue(strategy = GenerationType.IDENTITY)//tự động tăng id
     private Long id;
 
     @Column
@@ -29,9 +29,8 @@ public class Order {
     @Column
     private BigDecimal price;
 
-    @ManyToOne
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
+    @ManyToOne//nhiều order do 1 thằng user đặt
+    @JoinColumn(name = "user_id")//khóa ngoại liên kết tới bảng user
     private User user;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)

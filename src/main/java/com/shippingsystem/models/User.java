@@ -6,10 +6,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.List;
 
 @Entity
-@Table
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,7 +27,10 @@ public class User {
 
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-    private List<Order> orders;
+    private Collection<Order> orders;
+
+    @OneToOne(mappedBy = "shipper")
+    private OrderStatus orderStatus;
 
     @ManyToMany(mappedBy = "users")
     private Collection<Role> roles;

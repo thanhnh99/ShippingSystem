@@ -21,11 +21,18 @@ public class OrderStatus {
     private int value;
 
     @ManyToOne
+    @JoinColumn(name = "order_id")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Order order;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="warehouse_id", referencedColumnName = "id")
+    @JoinColumn(name="warehouse_id", referencedColumnName = "id",nullable = true)
     private Warehouse warehouse;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="shipper_id", referencedColumnName = "id", nullable = true)
+    private User shipper;
+
+
 }
