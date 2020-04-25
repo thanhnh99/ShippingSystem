@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="ShippingSystem2/Hibernate" uuid="a6a75a05-7287-4463-93b9-275e629f447f">
+      <driver-ref>azure.ms</driver-ref>
+      <synchronize>true</synchronize>
+      <imported>true</imported>
+      <remarks>Hibernate</remarks>
+      <jdbc-driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</jdbc-driver>
+      <jdbc-url>jdbc:localhost/phpmyadmin/</jdbc-url>
+    </data-source>
+  </component>
+</project>

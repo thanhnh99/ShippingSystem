@@ -21,7 +21,6 @@ public class OrderStatus {
     private int value;
 
     @ManyToOne
-    @JoinColumn(name="order_id")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Order order;

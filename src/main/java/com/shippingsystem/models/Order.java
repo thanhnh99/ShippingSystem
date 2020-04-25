@@ -30,7 +30,6 @@ public class Order {
     private BigDecimal price;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private User user;
