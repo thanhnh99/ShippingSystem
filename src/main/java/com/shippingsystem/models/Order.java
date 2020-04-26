@@ -12,19 +12,31 @@ import java.util.List;
 @NoArgsConstructor
 @Entity//Đánh dấu đây là table trong db
 @Table//config db. Không có gì mặc định là defaule
-public class Order {
-    @Id//đánh dấu primary key trong db
-    @GeneratedValue(strategy = GenerationType.IDENTITY)//tự động tăng id
-    private Long id;
+public class Order extends BaseModel {
 
     @Column
     private String name;
+
+    @Column
+    private String receiveName;
 
     @Column
     private Date sendTime;
 
     @Column
     private Date completeTime;
+
+    @Column
+    private String sendAddress;
+
+    @Column
+    private String receiveAddress;
+
+    @Column
+    private String sendPhone;
+
+    @Column
+    private String receivePhone;
 
     @Column
     private BigDecimal price;
@@ -35,4 +47,8 @@ public class Order {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderStatus> orderStatuses;
+
+    @ManyToOne
+    @JoinColumn(name = "item_id")
+    private Item item;
 }
