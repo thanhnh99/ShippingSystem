@@ -19,13 +19,15 @@ public class OrderService {
         return orderRepository.findAll();
     }
 
-    public void addOrder(Order order)
+    public Order addOrder(Order order)
     {
         orderRepository.save(order);
+        return order;
     }
 
     public Optional<Order> getInfor(Long id)
     {
         return orderRepository.findById(id);
     }
+
 }

@@ -14,10 +14,10 @@ public abstract class BaseModel {
     private Long id;
 
     @Column
-    private Date created_at;
+    private Date created_at = new Date();
 
     @Column
-    private Date updated_at;
+    private Date updated_at = new Date();
 
     @Column
     private String created_by;
