@@ -30,4 +30,9 @@ public class OrderService {
         return orderRepository.findById(id);
     }
 
+    public List<Order> findByReceiveAddress(String local)
+    {
+        return orderRepository.findByReceiveAddress(local);
+    }
+
 }

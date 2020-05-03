@@ -26,12 +26,7 @@ public class OrderController {
     @PostMapping("")
     public ResponseEntity addOrder(@RequestBody OrderRequest newOrder)
     {
-//        Order order = new Order();
-//        order.setName(newOrder.getName());
-//        order.setName(newOrder.getName());
-//        order.setName(newOder.getName());
-//        order.setItem(newOder.getItem());
-//        orderService.addOrder(order);
+
 
         return ResponseEntity.ok().body(newOrder);
     }
@@ -42,25 +37,39 @@ public class OrderController {
         return orderService.getAllOrder();
     }
 
-    @GetMapping("/{order_id}")
-    public Optional<Order> getInfor(@PathVariable(name = "order_id") Long orderId)
+    @GetMapping("")
+    public Optional<Order> getInfor(@RequestParam(value = "orderId") Long orderId)
     {
         return orderService.getInfor(orderId);
     }
 
+    @GetMapping("")
+    public ResponseEntity findOrderByLocal(@RequestParam(value = "local")String local)
+    {
+        List<Order> orders = orderService.findByReceiveAddress(local);
+        return ResponseEntity.ok().body(orders);
+    }
+
     @PutMapping("{order_id}")
-    public ResponseEntity editOrder(@RequestBody Order newOrder, @PathVariable(name = "order_id") Long id)
+    public ResponseEntity editOrder(@RequestBody OrderRequest newOrder, @PathVariable(name = "order_id") Long id)
     {
         if(orderService.getInfor(id) !=null)
         {
-            orderService.getInfor(id)
-                    .map(order -> {
-                        order.setName(newOrder.getName());
-                        order.setItem(newOrder.getItem());
-                        return ResponseEntity.ok().body(order);
-                    });
+
         }
         return (ResponseEntity) ResponseEntity.notFound();
+    }
+
+    @PutMapping("{order_id}")
+    public ResponseEntity updateStatusOrder(@RequestBody Long status,@PathVariable(name = "order_id") Long orderId)
+    {
+        return (ResponseEntity) ResponseEntity.ok();
+    }
+
+    @DeleteMapping("/{order_id}")
+    public  ResponseEntity deleteOrder(@PathVariable(name = "order_id")Long orderId)
+    {
+        return (ResponseEntity) ResponseEntity.ok();
     }
 
 
