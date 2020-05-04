@@ -14,6 +14,12 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Warehouse extends BaseModel{
 
+    public Warehouse(String name, String address, int status) {
+        this.name = name;
+        this.address = address;
+        this.status = status;
+    }
+
     @Column
     private String name;
 

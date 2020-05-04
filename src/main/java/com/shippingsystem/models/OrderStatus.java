@@ -12,7 +12,6 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class OrderStatus extends BaseModel {
 
-
     @Column
     private int value;
 
@@ -29,6 +28,5 @@ public class OrderStatus extends BaseModel {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="shipper_id", referencedColumnName = "id", nullable = true)
     private User shipper;
-
 
 }
