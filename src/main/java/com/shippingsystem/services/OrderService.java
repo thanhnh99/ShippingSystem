@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -16,18 +17,39 @@ public class OrderService {
 
     public List<Order> getAllOrder()
     {
-        return orderRepository.findAll();
+        return orderRepository.findAll().get();
     }
 
-    public Order addOrder(Order order)
+    public String addOrder(Order order)
     {
-        orderRepository.save(order);
+        try {
+            orderRepository.save(order);
+        }
+        catch (Exception e)
+        {
+            return e.getMessage();
+        }
+        return "SUCCESS";
+    }
+
+    public Order getInfor(Long id)
+    {
+        Order order = null;
+        try{
+            order =  orderRepository.findById(id).get();
+        }catch (NoSuchElementException e)
+        {
+            throw e;
+        }
+        catch (NullPointerException e)
+        {
+            throw e;
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
         return order;
-    }
-
-    public Optional<Order> getInfor(Long id)
-    {
-        return orderRepository.findById(id);
     }
 
     public List<Order> findByReceiveAddress(String local)
