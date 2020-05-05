@@ -1,13 +1,14 @@
 package com.shippingsystem.services;
 
 import com.shippingsystem.models.Order;
+import com.shippingsystem.models.requestModel.OrderRequest;
+import com.shippingsystem.models.response.ResponseBaseModel;
 import com.shippingsystem.repository.IOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class OrderService {
@@ -20,41 +21,56 @@ public class OrderService {
         return (List<Order>) orderRepository.findAll();
     }
 
-    public String addOrder(Order order)
-    {
-        try {
-            orderRepository.save(order);
-        }
-        catch (Exception e)
-        {
-            return e.getMessage();
-        }
-        return "SUCCESS";
-    }
+//    public OrderResponse addOrder(OrderRequest orderRequest)
+//    {
+//        //timf ra 1 item
+//
+//        OrderResponse response = new OrderResponse();
+//        ResponseBaseModel response = new ResponseBaseModel();
+//        Order order = new Order();
+//        order.setName(orderRequest.getName());
+////        order.setItem(item);
+//        order.setReceiveName(orderRequest.getReceiveName());
+//        order.setReceiveAddress(orderRequest.getReceiveAddress());
+//        order.setReceivePhone(orderRequest.getReceivePhone());
+//
+//
+//        return response;
+//    }
 
-    public Order getInfor(Long id)
-    {
-        Order order = null;
-        try{
-            order =  orderRepository.findById(id).get();
-        }catch (NoSuchElementException e)
-        {
-            throw e;
-        }
-        catch (NullPointerException e)
-        {
-            throw e;
-        }
-        catch (Exception e)
-        {
-            throw e;
-        }
-        return order;
-    }
+//    public ResponseBaseModel getOrderInfor(Long id)
+//    {
+//
+//    }
 
     public List<Order> findByReceiveAddress(String local)
     {
         return orderRepository.findByReceiveAddress(local);
     }
 
+    public ResponseBaseModel deleteOrder(Long id)
+    {
+        ResponseBaseModel response = new ResponseBaseModel();
+        try {
+            orderRepository.deleteById(id);
+        }
+        catch (NullPointerException e)
+        {
+            response.setStatusCode("404");
+            response.getMessage().setTitle("OrderStatus.ORDER_NOT_FOUND!_CAN_NOT_DELETE");
+            return response;
+        }
+        catch (DataIntegrityViolationException e) {
+            response.setStatusCode("404");
+            response.getMessage().setTitle("OrderStatus.FOREIGN_KEY_CONSTRAINT_FAILS!_CAN_NOT_DELETE");
+            return response;        }
+        catch (Exception e)
+        {
+            response.setStatusCode("203");
+            response.getMessage().setTitle("OrderStatus.CAN_NOT_DELETE_DATA");
+        }
+        response.setStatusCode("200");
+        response.getMessage().setTitle("ItemStatus.SUCCESSFULLY");
+        return response;
+    }
 }

@@ -1,24 +1,42 @@
 package com.shippingsystem.controller;
 
 import com.shippingsystem.models.Item;
+import com.shippingsystem.models.response.ResponseBaseModel;
+import com.shippingsystem.models.response.ResponseListModel;
+import com.shippingsystem.models.response.ResponseOneModel;
 import com.shippingsystem.services.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("item")
+@RequestMapping("item/")
 public class ItemController {
 
     @Autowired
     ItemService itemService;
 
     @GetMapping("")
-    public List<Item> getAllItem()
+    public ResponseEntity getAllItem()
     {
-        return itemService.getAll();
+        ResponseListModel response = new ResponseListModel();
+        response = itemService.getAll();
+
+        if(response.getStatusCode().equals("200")) return ResponseEntity.ok().body(response);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
+
+    }
+
+
+    @DeleteMapping("{item_id}")
+    public ResponseEntity deleteItem(@PathVariable(name = "item_id") Long id)
+    {
+        ResponseBaseModel response = new ResponseBaseModel();
+        response = itemService.deleteItem(id);
+        if(response.getStatusCode().equals("200")) return ResponseEntity.ok().body(response);
+        return ResponseEntity.status(203).body(response);
     }
 }

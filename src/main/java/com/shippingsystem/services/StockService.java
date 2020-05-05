@@ -30,10 +30,10 @@ public class StockService {
         }
         catch (Exception e) {
             response.setStatusCode("203");
-            response.getBody().setTitle(StockStatus.CAN_NOT_SAVE_DATA);
+            response.getMessage().setTitle(StockStatus.CAN_NOT_SAVE_DATA);
         }
         response.setStatusCode("200");
-        response.getBody().setTitle(StockStatus.SUCCESSFULLY);
+        response.getMessage().setTitle(StockStatus.SUCCESSFULLY);
         return response;
     }
 }

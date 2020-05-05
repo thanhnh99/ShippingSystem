@@ -9,15 +9,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ResponseBaseModel {
     private String statusCode;
-    private Body body;
+    private Message message;
 
     public ResponseBaseModel() {
-        body = new Body();
+        message = new Message();
     }
 
     @Data
-    public class Body {
+    public class Message {
         private String title;
-        private String message;
+        private String content;
     }
 }
