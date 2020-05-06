@@ -6,6 +6,8 @@ import com.shippingsystem.models.Order;
 import com.shippingsystem.models.OrderStatus;
 import com.shippingsystem.models.requestModel.OrderRequest;
 import com.shippingsystem.models.response.ResponseBaseModel;
+import com.shippingsystem.models.response.ResponseListModel;
+import com.shippingsystem.models.response.ResponseOneModel;
 import com.shippingsystem.services.ItemService;
 import com.shippingsystem.services.OrderService;
 import com.shippingsystem.services.OrderStatusService;
@@ -71,30 +73,37 @@ public class OrderController {
 //        return orderService.getAllOrder();
 //    }
 
-//    @GetMapping
-//    public ResponseEntity getOrder(@RequestParam(value = "orderId", required = false) Long orderId,
-//                                    @RequestParam(value = "local", required = false)String local)
-//    {
-//        if(orderId !=null)
-//        {
-//            Order order = null;
-//            order = orderService.getInfor(orderId);
-//            return ResponseEntity.ok().body(order);
-//        }
-//        List<Order> orders = null;
-//        if(local!=null)
-//        {
-//            orders = orderService.findByReceiveAddress(local);
-//            return ResponseEntity.ok().body(orders);
-//        }
-//        if(orderId == null && local ==null)
-//        {
-//            orders = orderService.getAllOrder();
-//            return ResponseEntity.ok().body(orders);
-//        }
-//
-//        return   ResponseEntity.status(404).body("No order was founded");
-//    }
+    @GetMapping
+    public ResponseEntity getOrder(@RequestParam(value = "orderId", required = false) Long orderId,
+                                    @RequestParam(value = "local", required = false)String local)
+    {
+        if(orderId!=null)
+        {
+            ResponseOneModel response = orderService.findOneById(orderId);
+            if(response.getStatusCode().equals("200"))
+            {
+                return ResponseEntity.ok().body(response);
+            }
+            return ResponseEntity.status(203).body(response);
+
+        }
+        if(local!=null)
+        {
+            ResponseListModel response = orderService.findByReceiveAddress(local);
+            if(response.getStatusCode().equals("200"))
+            {
+                return ResponseEntity.ok().body(response);
+            }
+            return ResponseEntity.status(203).body(response);
+        }
+        ResponseListModel response = orderService.getAll();
+        if(response.getStatusCode().equals("200"))
+        {
+            return ResponseEntity.ok().body(response);
+        }
+        return ResponseEntity.status(203).body(response);
+
+    }
 
 //    @PutMapping("/{order_id}")
 //    public ResponseEntity editOrder(@RequestBody OrderRequest newOrder, @PathVariable(name = "order_id") Long id)

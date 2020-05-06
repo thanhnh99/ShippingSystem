@@ -3,6 +3,8 @@ package com.shippingsystem.services;
 import com.shippingsystem.models.Order;
 import com.shippingsystem.models.requestModel.OrderRequest;
 import com.shippingsystem.models.response.ResponseBaseModel;
+import com.shippingsystem.models.response.ResponseListModel;
+import com.shippingsystem.models.response.ResponseOneModel;
 import com.shippingsystem.repository.IOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -42,12 +44,6 @@ public class OrderService {
 //    {
 //
 //    }
-
-    public List<Order> findByReceiveAddress(String local)
-    {
-        return orderRepository.findByReceiveAddress(local);
-    }
-
     public ResponseBaseModel deleteOrder(Long id)
     {
         ResponseBaseModel response = new ResponseBaseModel();
@@ -73,4 +69,68 @@ public class OrderService {
         response.getMessage().setTitle("ItemStatus.SUCCESSFULLY");
         return response;
     }
+
+    public ResponseOneModel findOneById(Long id)
+    {
+        ResponseOneModel response = new ResponseOneModel();
+        Order order = null;
+        try {
+            order = orderRepository.getOne(id);
+        } catch (DataIntegrityViolationException e) {
+            response.setStatusCode("404");
+            response.getMessage().setTitle("OrderStatus.FOREIGN_KEY_CONSTRAINT_FAILS!_CAN_NOT_GET");
+            return response;        }
+        catch (Exception e)
+        {
+            response.setStatusCode("203");
+            response.getMessage().setTitle("OrderStatus.CAN_NOT_GET_DATA");
+        }
+        response.setStatusCode("200");
+        response.getMessage().setTitle("OrderStatus.SUCCESSFULLY");
+        response.setData(order);
+        return response;
+    }
+
+    public ResponseListModel findByReceiveAddress(String local)
+    {
+        ResponseListModel response = new ResponseListModel();
+        List<Order> orders = null;
+        try{
+            orders = (List<Order>) orderRepository.findByReceiveAddress(local);
+        } catch (DataIntegrityViolationException e) {
+            response.setStatusCode("404");
+            response.getMessage().setTitle("OrderStatus.FOREIGN_KEY_CONSTRAINT_FAILS!_CAN_NOT_GET");
+            return response;        }
+        catch (Exception e)
+        {
+            response.setStatusCode("203");
+            response.getMessage().setTitle("OrderStatus.CAN_NOT_GET_DATA");
+        }
+        response.setStatusCode("200");
+        response.getMessage().setTitle("ItemStatus.SUCCESSFULLY");
+        response.setData(orders);
+        return response;
+    }
+
+    public ResponseListModel getAll()
+    {
+        ResponseListModel response = new ResponseListModel();
+        List<Order> orders = null;
+        try{
+            orders = orderRepository.findAll();
+        } catch (DataIntegrityViolationException e) {
+            response.setStatusCode("404");
+            response.getMessage().setTitle("OrderStatus.FOREIGN_KEY_CONSTRAINT_FAILS!_CAN_NOT_GET");
+            return response;        }
+        catch (Exception e)
+        {
+            response.setStatusCode("203");
+            response.getMessage().setTitle("OrderStatus.CAN_NOT_GET_DATA");
+        }
+        response.setStatusCode("200");
+        response.getMessage().setTitle("OrderStatus.SUCCESSFULLY");
+        response.setData(orders);
+        return response;
+    }
+
 }
