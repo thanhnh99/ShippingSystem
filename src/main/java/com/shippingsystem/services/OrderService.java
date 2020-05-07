@@ -1,15 +1,21 @@
 package com.shippingsystem.services;
 
+import com.shippingsystem.models.Item;
 import com.shippingsystem.models.Order;
+import com.shippingsystem.models.OrderStatus;
+import com.shippingsystem.models.StockStatus;
 import com.shippingsystem.models.requestModel.OrderRequest;
 import com.shippingsystem.models.response.ResponseBaseModel;
 import com.shippingsystem.models.response.ResponseListModel;
 import com.shippingsystem.models.response.ResponseOneModel;
+import com.shippingsystem.repository.IItemRepository;
 import com.shippingsystem.repository.IOrderRepository;
+import com.shippingsystem.repository.IOrderStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -18,32 +24,57 @@ public class OrderService {
     @Autowired
     IOrderRepository orderRepository ;
 
-    public List<Order> getAllOrder()
+    @Autowired
+    IItemRepository itemRepository ;
+
+    @Autowired
+    IOrderStatusRepository orderStatusRepository ;
+
+    public ResponseBaseModel addOrder(OrderRequest orderRequest)
     {
-        return (List<Order>) orderRepository.findAll();
+        ResponseBaseModel response = new ResponseBaseModel();
+
+        Item item = itemRepository.getOne(orderRequest.getItemType());
+        if(item == null)
+        {
+            response.setStatusCode("404");
+            response.getMessage().setTitle("Không tìm thấy item");
+        }
+
+        //Create Order
+        Order order = new Order();
+        order.setName(orderRequest.getName());
+        order.setReceiveName(orderRequest.getReceiveName());
+        order.setReceiveAddress(orderRequest.getReceiveAddress());
+        order.setReceivePhone(orderRequest.getReceivePhone());
+        order.setSendAddress(orderRequest.getSendAddress());
+        order.setItem(item);
+        order.setPrice(BigDecimal.valueOf(10000000));
+
+        //Create a OrderStatus for Order
+        OrderStatus orderStatus = new OrderStatus();
+        orderStatus.setOrder(order);
+
+        try {
+            orderRepository.save(order);
+        } catch (Exception e) {
+            response.setStatusCode("203");
+            response.getMessage().setTitle("Can't save order");
+        }
+        try {
+            orderStatusRepository.save(orderStatus);
+        } catch (Exception e) {
+            orderRepository.delete(order);
+            response.setStatusCode("203");
+            response.getMessage().setTitle("Can't save order");
+        }
+
+        response.setStatusCode("200");
+        response.getMessage().setTitle("successfully");
+        return response;
+
     }
 
-//    public OrderResponse addOrder(OrderRequest orderRequest)
-//    {
-//        //timf ra 1 item
-//
-//        OrderResponse response = new OrderResponse();
-//        ResponseBaseModel response = new ResponseBaseModel();
-//        Order order = new Order();
-//        order.setName(orderRequest.getName());
-////        order.setItem(item);
-//        order.setReceiveName(orderRequest.getReceiveName());
-//        order.setReceiveAddress(orderRequest.getReceiveAddress());
-//        order.setReceivePhone(orderRequest.getReceivePhone());
-//
-//
-//        return response;
-//    }
-
-//    public ResponseBaseModel getOrderInfor(Long id)
-//    {
-//
-//    }
     public ResponseBaseModel deleteOrder(Long id)
     {
         ResponseBaseModel response = new ResponseBaseModel();

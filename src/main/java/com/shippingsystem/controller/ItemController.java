@@ -1,6 +1,7 @@
 package com.shippingsystem.controller;
 
 import com.shippingsystem.models.Item;
+import com.shippingsystem.models.requestModel.ItemRequest;
 import com.shippingsystem.models.response.ResponseBaseModel;
 import com.shippingsystem.models.response.ResponseListModel;
 import com.shippingsystem.models.response.ResponseOneModel;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("item/")
+@RequestMapping("item")
 public class ItemController {
 
     @Autowired
@@ -26,6 +27,17 @@ public class ItemController {
         response = itemService.getAll();
 
         if(response.getStatusCode().equals("200")) return ResponseEntity.ok().body(response);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
+
+    }
+
+    @PostMapping("")
+    public  ResponseEntity addItem(@RequestBody ItemRequest itemRequest)
+    {
+        ResponseBaseModel response = new ResponseBaseModel();
+        response = itemService.addItem(itemRequest);
+
+        if(response.getStatusCode().equals("200")) return ResponseEntity.ok(response);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
 
     }

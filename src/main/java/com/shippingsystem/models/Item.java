@@ -12,13 +12,13 @@ import java.util.List;
 
 @Entity
 @Data
+@JsonIgnoreProperties("orders")
 public class Item  extends BaseModel{
 
     @Column
     private String name;
 
     @OneToMany(mappedBy = "item",cascade = CascadeType.ALL)
-    @JsonManagedReference
     private List<Order> orders;
 
 }

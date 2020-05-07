@@ -14,6 +14,7 @@ import com.shippingsystem.services.OrderStatusService;
 import org.aspectj.lang.annotation.RequiredTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,45 +34,17 @@ public class OrderController {
     @Autowired
     private OrderStatusService orderStatusService;
 
-//    @PostMapping
-//    public ResponseEntity addOrder(@RequestBody OrderRequest newOrder)
-//    {
-//        try {
-//            Item item = itemService.getInfo(newOrder.getItemType()).get();
-//
-//
-//            Order order = new Order();
-//            order.setName(newOrder.getName());
-//            order.setItem(item);
-//            order.setReceiveName(newOrder.getReceiveName());
-//            order.setReceiveAddress(newOrder.getReceiveAddress());
-//            order.setReceivePhone(newOrder.getReceivePhone());
-////            order.setUser();
-//            order.setSendAddress(newOrder.getSendAddress());
-////            orderService.addOrder(order);
-////            String status = orderService.addOrder();
-//
-//
-//
-//            OrderStatus orderStatus = new OrderStatus();
-//            orderStatus.setValue(1);
-//            orderStatus.setOrder(order);
-//            orderStatusService.addOrderStatus(orderStatus);
-//
-//            return ResponseEntity.ok().body(order);
-//
-//        }catch (NoSuchElementException e)
-//        {
-//            return ResponseEntity.status(404).body("Item not found");
-//        }
-//
-//    }
+    @PostMapping
+    public ResponseEntity addOrder(@RequestBody OrderRequest newOrder)
+    {
+        ResponseBaseModel response = new ResponseBaseModel();
 
-//    @GetMapping
-//    public List<Order> getAllOrder()
-//    {
-//        return orderService.getAllOrder();
-//    }
+        response = orderService.addOrder(newOrder);
+
+        if(response.getStatusCode().equals("200")) return ResponseEntity.ok(response);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
+    }
+
 
     @GetMapping
     public ResponseEntity getOrder(@RequestParam(value = "orderId", required = false) Long orderId,

@@ -1,6 +1,8 @@
 package com.shippingsystem.services;
 
 import com.shippingsystem.models.Item;
+import com.shippingsystem.models.StockStatus;
+import com.shippingsystem.models.requestModel.ItemRequest;
 import com.shippingsystem.models.response.ResponseBaseModel;
 import com.shippingsystem.models.response.ResponseListModel;
 import com.shippingsystem.models.response.ResponseOneModel;
@@ -15,6 +17,23 @@ import java.util.List;
 public class ItemService {
     @Autowired
     IItemRepository itemRepository;
+
+    public ResponseBaseModel addItem(ItemRequest request)
+    {
+        Item item = new Item();
+        item.setName(request.getName());
+        ResponseBaseModel response = new ResponseBaseModel();
+        try {
+            itemRepository.save(item);
+        }catch (Exception e)
+        {
+            response.setStatusCode("203");
+            response.getMessage().setTitle("ItemStatus.CAN_NOT_SAVE_DATA");
+        }
+        response.setStatusCode("200");
+        response.getMessage().setTitle("ItemStatus.SUCCESSFULLY");
+        return response;
+    }
 
     public ResponseOneModel<Item> getInfo(Long id)
     {
