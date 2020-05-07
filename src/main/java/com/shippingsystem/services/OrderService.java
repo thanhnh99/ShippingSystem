@@ -42,12 +42,7 @@ public class OrderService {
         }
 
         //Create Order
-        Order order = new Order();
-        order.setName(orderRequest.getName());
-        order.setReceiveName(orderRequest.getReceiveName());
-        order.setReceiveAddress(orderRequest.getReceiveAddress());
-        order.setReceivePhone(orderRequest.getReceivePhone());
-        order.setSendAddress(orderRequest.getSendAddress());
+        Order order = new Order(orderRequest);
         order.setItem(item);
         order.setPrice(BigDecimal.valueOf(10000000));
 
@@ -74,6 +69,11 @@ public class OrderService {
         return response;
 
     }
+
+//    public ResponseOneModel editOrder(OrderRequest orderRequest)
+//    {
+//        orderRepository
+//    }
 
     public ResponseBaseModel deleteOrder(Long id)
     {

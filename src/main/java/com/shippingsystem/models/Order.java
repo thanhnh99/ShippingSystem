@@ -2,6 +2,7 @@ package com.shippingsystem.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.shippingsystem.models.requestModel.OrderRequest;
 import lombok.*;
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -53,4 +54,13 @@ public class Order extends BaseModel {
     @ManyToOne
     @JoinColumn(name = "item_id")
     private Item item;
+
+    public Order (OrderRequest orderRequest)
+    {
+        this.setName(orderRequest.getName());
+        this.setReceiveName(orderRequest.getReceiveName());
+        this.setReceiveAddress(orderRequest.getReceiveAddress());
+        this.setReceivePhone(orderRequest.getReceivePhone());
+        this.setSendAddress(orderRequest.getSendAddress());
+    }
 }
