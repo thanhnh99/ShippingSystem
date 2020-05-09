@@ -27,7 +27,7 @@ public class ItemController {
         response = itemService.getAll();
 
         if(response.getStatusCode().equals("200")) return ResponseEntity.ok().body(response);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 
     }
 

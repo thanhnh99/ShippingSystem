@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -25,7 +26,13 @@ public class ItemService {
         ResponseBaseModel response = new ResponseBaseModel();
         try {
             itemRepository.save(item);
-        }catch (Exception e)
+        }
+        catch (DataIntegrityViolationException e) {
+            response.setStatusCode("404");
+            response.getMessage().setTitle("ItemStatus.FOREIGN_KEY_CONSTRAINT_FAILS!_CAN_NOT_SAVE");
+            return response;
+        }
+        catch (Exception e)
         {
             response.setStatusCode("203");
             response.getMessage().setTitle("ItemStatus.CAN_NOT_SAVE_DATA");
@@ -37,43 +44,44 @@ public class ItemService {
 
     public ResponseOneModel<Item> getInfo(Long id)
     {
-        Item item = null;
         ResponseOneModel response = new ResponseOneModel();
         try {
-            item = itemRepository.findById(id).get();
-        }catch (NullPointerException e)
+            Item item = itemRepository.findById(id).get();
+            response.setStatusCode("200");
+            response.getMessage().setTitle("ItemStatus.SUCCESSFULLY");
+            response.setData(item);
+        }catch (EntityNotFoundException e)
         {
             response.setStatusCode("404");
             response.getMessage().setTitle("ItemStatus.NOT_FOUND");
             response.setData(null);
-            return response;
         }
         catch (Exception e)
         {
             response.setStatusCode("203");
             response.getMessage().setTitle("ItemStatus.CAN_NOT_GET_DATA");
             response.setData(null);
-            return response;
         }
-        response.setStatusCode("200");
-        response.getMessage().setTitle("ItemStatus.SUCCESSFULLY");
-        response.setData(item);
         return response;
 
     }
 
     public ResponseListModel<Item> getAll()
     {
-        List<Item> items = null;
         ResponseListModel response = new ResponseListModel();
         try {
 
-            items = itemRepository.findAll();
-        }catch (NullPointerException e)
-        {
-            response.setStatusCode("404");
-            response.getMessage().setTitle("ItemStatus.NOT_FOUND");
-            response.setData(null);
+            List<Item> items = itemRepository.findAll();
+            if(items.size()==0)
+            {
+                response.setStatusCode("404");
+                response.getMessage().setTitle("ItemStatus.ITEM_NOT_FOUND");
+                response.setData(null);
+                return response;
+            }
+            response.setStatusCode("200");
+            response.getMessage().setTitle("ItemStatus.SUCCESSFULLY");
+            response.setData(items);
         }
         catch (Exception e)
         {
@@ -81,9 +89,6 @@ public class ItemService {
             response.getMessage().setTitle("ItemStatus.CAN_NOT_GET_DATA");
             response.setData(null);
         }
-        response.setStatusCode("200");
-        response.getMessage().setTitle("ItemStatus.SUCCESSFULLY");
-        response.setData(items);
         return response;
     }
 

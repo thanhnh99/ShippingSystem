@@ -1,5 +1,6 @@
 package com.shippingsystem.services;
 
+import com.shippingsystem.Enum.EOrderStatus;
 import com.shippingsystem.models.Item;
 import com.shippingsystem.models.Order;
 import com.shippingsystem.models.OrderStatus;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -30,29 +32,47 @@ public class OrderService {
     @Autowired
     IOrderStatusRepository orderStatusRepository ;
 
+    @Autowired
+    ItemService itemService;
+
+    @Autowired
+    OrderService orderService;
+
     public ResponseBaseModel addOrder(OrderRequest orderRequest)
     {
         ResponseBaseModel response = new ResponseBaseModel();
+        ResponseOneModel<Item> itemResponse = itemService.getInfo(orderRequest.getItemType());
 
-        Item item = itemRepository.getOne(orderRequest.getItemType());
-        if(item == null)
+        if(!itemResponse.getStatusCode().equals("200"))
         {
             response.setStatusCode("404");
-            response.getMessage().setTitle("Không tìm thấy item");
+            response.getMessage().setTitle("ItemStatus.CAN_NOT_FIND_ITEM");
+            return response;
         }
 
         //Create Order
         Order order = new Order(orderRequest);
-        order.setItem(item);
+        order.setItem(itemResponse.getData());
         order.setPrice(BigDecimal.valueOf(10000000));
 
         //Create a OrderStatus for Order
         OrderStatus orderStatus = new OrderStatus();
         orderStatus.setOrder(order);
+        orderStatus.setValue(EOrderStatus.PENDING);
 
         try {
             orderRepository.save(order);
-        } catch (Exception e) {
+        }
+        catch (DataIntegrityViolationException e) {
+            response.setStatusCode("404");
+            response.getMessage().setTitle("ItemStatus.FOREIGN_KEY_CONSTRAINT_FAILS!_CAN_NOT_SAVE");
+            return response;
+        }catch (EntityNotFoundException e) {
+            orderRepository.delete(order);
+            response.setStatusCode("203");
+            response.getMessage().setTitle("ItemStatus.FOREIGN_KEY_CONSTRAINT_FAILS!_CAN_FIND_ITEM");
+        }
+        catch (Exception e) {
             response.setStatusCode("203");
             response.getMessage().setTitle("Can't save order");
         }
@@ -70,10 +90,41 @@ public class OrderService {
 
     }
 
-//    public ResponseOneModel editOrder(OrderRequest orderRequest)
-//    {
-//        orderRepository
-//    }
+    public ResponseOneModel editOrder(Long orderId, OrderRequest orderRequest)
+    {
+        ResponseOneModel response = new ResponseOneModel();
+        try {
+
+            Order order = orderService.findOneById(orderId).getData();
+            List<OrderStatus> orderStatusList = order.getOrderStatuses();
+            if(orderStatusList.stream()
+                    .filter(orderStatus -> !orderStatus.getValue().equals(EOrderStatus.PENDING))
+                    .findFirst()
+                    .isPresent())
+            {
+                response.setStatusCode("403");
+                response.getMessage().setTitle("not access");
+            }
+            else {
+                order.setName(orderRequest.getName());
+                order.setReceiveName(orderRequest.getReceiveName());
+                order.setReceiveAddress(orderRequest.getReceiveAddress());
+                order.setReceivePhone(orderRequest.getReceivePhone());
+                order.setSendAddress(orderRequest.getSendAddress());
+                order.setItem(itemService.getInfo(orderRequest.getItemType()).getData());
+                orderRepository.save(order);
+
+                response.setStatusCode("200");
+                response.getMessage().setTitle("successfully");
+                response.setData(order);
+            }
+
+        }catch (Exception e) {
+            response.setStatusCode("203");
+            response.getMessage().setTitle("Can't edit order");
+        }
+        return response;
+    }
 
     public ResponseBaseModel deleteOrder(Long id)
     {
@@ -101,7 +152,7 @@ public class OrderService {
         return response;
     }
 
-    public ResponseOneModel findOneById(Long id)
+    public ResponseOneModel<Order> findOneById(Long id)
     {
         ResponseOneModel response = new ResponseOneModel();
         Order order = null;

@@ -1,6 +1,7 @@
 package com.shippingsystem.controller;
 
 
+import com.shippingsystem.Enum.EOrderStatus;
 import com.shippingsystem.models.Item;
 import com.shippingsystem.models.Order;
 import com.shippingsystem.models.OrderStatus;
@@ -42,13 +43,26 @@ public class OrderController {
         response = orderService.addOrder(newOrder);
 
         if(response.getStatusCode().equals("200")) return ResponseEntity.ok(response);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
 
+    @PutMapping("{order_id}")
+    public  ResponseEntity editOrder(@PathVariable(value = "order_id") Long orderId,
+                                       @RequestBody OrderRequest orderRequest)
+    {
+        ResponseBaseModel response = new ResponseBaseModel();
+
+        response = orderService.editOrder(orderId,orderRequest);
+
+        if(response.getStatusCode().equals("200")) return ResponseEntity.ok(response);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
     @GetMapping
     public ResponseEntity getOrder(@RequestParam(value = "orderId", required = false) Long orderId,
-                                    @RequestParam(value = "local", required = false)String local)
+                                    @RequestParam(value = "sendAddress", required = false)String sendAddress,
+                                   @RequestParam(value = "receiveAddress", required = false)String receiveAddress)
     {
         if(orderId!=null)
         {
@@ -60,15 +74,16 @@ public class OrderController {
             return ResponseEntity.status(203).body(response);
 
         }
-        if(local!=null)
+        if(receiveAddress!=null)
         {
-            ResponseListModel response = orderService.findByReceiveAddress(local);
+            ResponseListModel response = orderService.findByReceiveAddress(receiveAddress);
             if(response.getStatusCode().equals("200"))
             {
                 return ResponseEntity.ok().body(response);
             }
             return ResponseEntity.status(203).body(response);
         }
+
         ResponseListModel response = orderService.getAll();
         if(response.getStatusCode().equals("200"))
         {
@@ -78,18 +93,6 @@ public class OrderController {
 
     }
 
-//    @PutMapping("/{order_id}")
-//    public ResponseEntity editOrder(@RequestBody OrderRequest newOrder, @PathVariable(name = "order_id") Long id)
-//    {
-//
-//        return (ResponseEntity) ResponseEntity.ok();
-//    }
-
-    @PutMapping("/{order_id}")
-    public ResponseEntity updateStatusOrder(@RequestBody Long status,@PathVariable(name = "order_id") Long orderId)
-    {
-        return (ResponseEntity) ResponseEntity.ok().body(orderId);
-    }
 
     @DeleteMapping("/{order_id}")
     public  ResponseEntity deleteOrder(@PathVariable(name = "order_id")Long orderId)
@@ -100,5 +103,14 @@ public class OrderController {
         return ResponseEntity.status(203).body(response);
     }
 
+    @PostMapping("/{order_id}/status")
+    public ResponseEntity updateOrderStatus(@PathVariable(name = "order_id") Long orderId,
+                                            @RequestBody EOrderStatus orderStatus)
+    {
+        ResponseOneModel<OrderStatus> response = orderStatusService.addOrderStatus(orderId, orderStatus);
+
+        if(response.getStatusCode().equals("200")) return ResponseEntity.ok().body(response);
+        return ResponseEntity.status(203).body(response);
+    }
 
 }

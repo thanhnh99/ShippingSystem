@@ -2,6 +2,7 @@ package com.shippingsystem.models;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.shippingsystem.Enum.EOrderStatus;
 import lombok.*;
 
 import javax.persistence.*;
@@ -16,7 +17,7 @@ import javax.persistence.*;
 public class OrderStatus extends BaseModel {
 
     @Column
-    private int value;
+    private EOrderStatus value;
 
     @ManyToOne
     @JoinColumn(name = "order_id")
