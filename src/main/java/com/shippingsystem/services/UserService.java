@@ -12,6 +12,7 @@ import java.security.NoSuchAlgorithmException;
 
 @Service
 public class UserService {
+
     private final AuthenticationManager authenticationManager;
     private final IUserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;

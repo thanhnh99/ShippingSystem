@@ -3,7 +3,6 @@ package com.shippingsystem.services;
 import com.shippingsystem.models.User;
 import com.shippingsystem.models.UserDetailCustom;
 import com.shippingsystem.repository.IUserRepository;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -17,14 +16,9 @@ public class UserDetailServiceCustom implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
-    @Bean
-    JwtAuthenticationFilter jwtAuthenticationFilterBean(){
-        return new JwtAuthenticationFilter();
-    }
-
     @Override
     public UserDetailCustom loadUserByUsername(String s) throws UsernameNotFoundException {
-        User user = userRepository.findByUserName(s);
+        User user = userRepository.findByUsername(s);
         if(user == null) {
             return null;
         }
