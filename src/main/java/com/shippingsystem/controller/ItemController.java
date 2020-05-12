@@ -38,7 +38,7 @@ public class ItemController {
         response = itemService.addItem(itemRequest);
 
         if(response.getStatusCode().equals("200")) return ResponseEntity.ok(response);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 
     }
 

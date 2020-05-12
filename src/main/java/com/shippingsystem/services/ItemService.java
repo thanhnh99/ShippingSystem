@@ -21,16 +21,36 @@ public class ItemService {
 
     public ResponseBaseModel addItem(ItemRequest request)
     {
-        Item item = new Item();
-        item.setName(request.getName());
         ResponseBaseModel response = new ResponseBaseModel();
-        try {
-            itemRepository.save(item);
-        }
-        catch (DataIntegrityViolationException e) {
-            response.setStatusCode("404");
-            response.getMessage().setTitle("ItemStatus.FOREIGN_KEY_CONSTRAINT_FAILS!_CAN_NOT_SAVE");
-            return response;
+        try
+        {
+            Item item = itemRepository.findByCode(request.getCode());
+            if(item==null)
+            {
+                Item newItem = new Item();
+                newItem.setName(request.getName());
+                newItem.setCode(request.getCode());
+                newItem.setMultiplicity(request.getMultiplicity());
+                try {
+                    itemRepository.save(newItem);
+                }
+                catch (DataIntegrityViolationException e) {
+                    response.setStatusCode("404");
+                    response.getMessage().setTitle("ItemStatus.FOREIGN_KEY_CONSTRAINT_FAILS!_CAN_NOT_SAVE");
+                    return response;
+                }
+                catch (Exception e)
+                {
+                    response.setStatusCode("203");
+                    response.getMessage().setTitle("ItemStatus.CAN_NOT_SAVE_DATA");
+                }
+            }
+            else
+            {
+                response.setStatusCode("405");
+                response.getMessage().setTitle("ItemStatus.ITEM_EXISTED");
+                return response;
+            }
         }
         catch (Exception e)
         {

@@ -9,4 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ItemRequest {
     private String name;
+    private String code;
+    private int multiplicity;
 }
