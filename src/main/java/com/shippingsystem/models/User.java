@@ -22,6 +22,12 @@ public class User extends BaseModel{
     @Column
     private String  address;
 
+    @Column
+    private String password;
+
+    @Column
+    private boolean isEnable;
+
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private Collection<Order> orders;
@@ -31,4 +37,10 @@ public class User extends BaseModel{
 
     @ManyToMany(mappedBy = "users")
     private Collection<Role> roles;
+
+    public User(String email, String username, String password) {
+        this.email = email;
+        this.username = username;
+        this.password = password;
+    }
 }
