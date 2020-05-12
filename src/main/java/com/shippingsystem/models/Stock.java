@@ -1,6 +1,7 @@
 package com.shippingsystem.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,9 +13,10 @@ import javax.persistence.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Warehouse extends BaseModel{
+@JsonIgnoreProperties("orderStatus")
+public class Stock extends BaseModel{
 
-    public Warehouse(String name, String address, int status) {
+    public Stock(String name, String address, int status) {
         this.name = name;
         this.address = address;
         this.status = status;
@@ -29,6 +31,6 @@ public class Warehouse extends BaseModel{
     @Column
     private int status;
 
-    @OneToOne(mappedBy = "warehouse")
+    @OneToOne(mappedBy = "stock")
     private OrderStatus orderStatus;
 }
