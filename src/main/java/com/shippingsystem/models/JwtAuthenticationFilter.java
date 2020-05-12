@@ -34,9 +34,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if(requestTokenHeader != null) {
             jwtToken = requestTokenHeader.substring(7);
-            System.out.println(jwtToken);
             try {
-                email = userService.getEmailFromToken(getEmailRequest.build());
+                email = userService.getEmailFromToken(jwtToken);
 
             } catch (Exception ex) {
                 logger.error("failed on set user authentication", ex);
@@ -48,11 +47,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if(email != null && SecurityContextHolder.getContext().getAuthentication() == null){
 
             UserDetails userDetails = this.userDetailServiceCustom.loadUserByEmail(email);
-            ValidateTokenRequest.Builder validateRequest = ValidateTokenRequest.newBuilder();
-            validateRequest.setEmail(email);
-            validateRequest.setToken(jwtToken);
 
-            if(grpcClientService.validateToken(validateRequest.build())){
+            if(userService.validateToken(email, jwtToken)){
 
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
                         = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

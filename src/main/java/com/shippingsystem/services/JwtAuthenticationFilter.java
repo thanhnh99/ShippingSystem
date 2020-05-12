@@ -8,9 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
-import web.service.grpc.user.GetEmailRequest;
-import web.service.grpc.user.ValidateTokenRequest;
-
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,6 +18,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailServiceCustom userDetailServiceCustom;
 
+    @Autowired
+    private UserService userService;
 
     @SneakyThrows
     @Override
@@ -35,9 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             jwtToken = requestTokenHeader.substring(7);
             System.out.println(jwtToken);
             try {
-                GetEmailRequest.Builder getEmailRequest = GetEmailRequest.newBuilder();
-                getEmailRequest.setToken(jwtToken);
-                email = grpcClientService.getEmailFromToken(getEmailRequest.build());
+                email = userService.getEmailFromToken(jwtToken);
 
             } catch (Exception ex) {
                 logger.error("failed on set user authentication", ex);
@@ -49,11 +46,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if(email != null && SecurityContextHolder.getContext().getAuthentication() == null){
 
             UserDetails userDetails = this.userDetailServiceCustom.loadUserByEmail(email);
-            ValidateTokenRequest.Builder validateRequest = ValidateTokenRequest.newBuilder();
-            validateRequest.setEmail(email);
-            validateRequest.setToken(jwtToken);
 
-            if(grpcClientService.validateToken(validateRequest.build())){
+            if(userService.validateToken(email, jwtToken)){
 
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
                         = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

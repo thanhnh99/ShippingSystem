@@ -1,6 +1,6 @@
 package com.shippingsystem.services;
 
-import com.shippingsystem.models.StockStatus;
+import com.shippingsystem.models.ResponseStatus;
 import com.shippingsystem.models.Warehouse;
 import com.shippingsystem.models.requestModel.AddNewStockRequest;
 import com.shippingsystem.models.response.ResponseBaseModel;
@@ -30,10 +30,10 @@ public class StockService {
         }
         catch (Exception e) {
             response.setStatusCode("203");
-            response.getMessage().setTitle(StockStatus.CAN_NOT_SAVE_DATA);
+            response.getMessage().setTitle(ResponseStatus.CAN_NOT_SAVE_DATA);
         }
         response.setStatusCode("200");
-        response.getMessage().setTitle(StockStatus.SUCCESSFULLY);
+        response.getMessage().setTitle(ResponseStatus.SUCCESSFULLY);
         return response;
     }
 }
