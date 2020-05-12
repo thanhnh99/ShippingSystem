@@ -5,6 +5,7 @@ import com.shippingsystem.models.User;
 import com.shippingsystem.models.VerificationToken;
 import com.shippingsystem.repository.IUserRepository;
 import com.shippingsystem.repository.IVerificationTokenRepository;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
