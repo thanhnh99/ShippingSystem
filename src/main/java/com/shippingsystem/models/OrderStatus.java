@@ -24,8 +24,8 @@ public class OrderStatus extends BaseModel {
     private Order order;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="warehouse_id", referencedColumnName = "id")
-    private Warehouse warehouse;
+    @JoinColumn(name="stock_id", referencedColumnName = "id")
+    private Stock stock;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="shipper_id", referencedColumnName = "id")

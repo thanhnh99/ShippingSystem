@@ -6,6 +6,7 @@ import com.shippingsystem.models.Item;
 import com.shippingsystem.models.Order;
 import com.shippingsystem.models.OrderStatus;
 import com.shippingsystem.models.requestModel.OrderRequest;
+import com.shippingsystem.models.requestModel.OrderStatusRequest;
 import com.shippingsystem.models.response.ResponseBaseModel;
 import com.shippingsystem.models.response.ResponseListModel;
 import com.shippingsystem.models.response.ResponseOneModel;
@@ -103,11 +104,12 @@ public class OrderController {
         return ResponseEntity.status(203).body(response);
     }
 
+
     @PostMapping("/{order_id}/status")
     public ResponseEntity updateOrderStatus(@PathVariable(name = "order_id") Long orderId,
-                                            @RequestBody EOrderStatus orderStatus)
+                                            @RequestBody OrderStatusRequest orderStatusRequest)
     {
-        ResponseOneModel<OrderStatus> response = orderStatusService.addOrderStatus(orderId, orderStatus);
+        ResponseOneModel<OrderStatus> response = orderStatusService.addOrderStatus(orderId, orderStatusRequest);
 
         if(response.getStatusCode().equals("200")) return ResponseEntity.ok().body(response);
         return ResponseEntity.status(203).body(response);

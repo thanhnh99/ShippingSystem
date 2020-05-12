@@ -9,7 +9,9 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-@Data//lombok
+//@Data//lombok
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity//Đánh dấu đây là table trong db

@@ -155,9 +155,11 @@ public class OrderService {
     public ResponseOneModel<Order> findOneById(Long id)
     {
         ResponseOneModel response = new ResponseOneModel();
-        Order order = null;
         try {
-            order = orderRepository.getOne(id);
+            Order order = orderRepository.getOne(id);
+            response.setStatusCode("200");
+            response.getMessage().setTitle("OrderStatus.SUCCESSFULLY");
+            response.setData(order);
         } catch (DataIntegrityViolationException e) {
             response.setStatusCode("404");
             response.getMessage().setTitle("OrderStatus.FOREIGN_KEY_CONSTRAINT_FAILS!_CAN_NOT_GET");
@@ -167,9 +169,6 @@ public class OrderService {
             response.setStatusCode("203");
             response.getMessage().setTitle("OrderStatus.CAN_NOT_GET_DATA");
         }
-        response.setStatusCode("200");
-        response.getMessage().setTitle("OrderStatus.SUCCESSFULLY");
-        response.setData(order);
         return response;
     }
 

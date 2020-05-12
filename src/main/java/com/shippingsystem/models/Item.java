@@ -18,6 +18,12 @@ public class Item  extends BaseModel{
     @Column
     private String name;
 
+    @Column(unique = true)
+    private String code;
+
+    @Column
+    private int multiplicity;
+
     @OneToMany(mappedBy = "item",cascade = CascadeType.ALL)
     private List<Order> orders;
 
