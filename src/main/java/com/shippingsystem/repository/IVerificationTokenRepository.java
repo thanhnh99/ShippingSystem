@@ -1,6 +1,6 @@
 package com.shippingsystem.repository;
 
-import com.shippingsystem.models.VerificationToken;
+import com.shippingsystem.models.auth.VerificationToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

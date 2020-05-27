@@ -1,4 +1,4 @@
-package com.shippingsystem.models;
+package com.shippingsystem.models.auth;
 
 public class ResponseStatus {
     public static final String SUCCESSFULLY = "SUCCESSFULLY";

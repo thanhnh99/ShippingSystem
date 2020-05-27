@@ -8,6 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResponseOneModel<T> extends ResponseBaseModel{
-
     private T data;
 }

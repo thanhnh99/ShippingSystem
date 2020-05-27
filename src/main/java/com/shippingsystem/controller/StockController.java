@@ -1,6 +1,6 @@
 package com.shippingsystem.controller;
 
-import com.shippingsystem.models.requestModel.AddNewStockRequest;
+import com.shippingsystem.models.request.AddNewStockRequest;
 import com.shippingsystem.models.response.ResponseBaseModel;
 import com.shippingsystem.models.response.ResponseListModel;
 import com.shippingsystem.services.StockService;

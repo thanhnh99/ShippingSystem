@@ -1,8 +1,6 @@
-package com.shippingsystem.models;
+package com.shippingsystem.models.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.shippingsystem.models.requestModel.OrderRequest;
+import com.shippingsystem.models.request.OrderRequest;
 import lombok.*;
 import javax.persistence.*;
 import java.math.BigDecimal;

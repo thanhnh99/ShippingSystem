@@ -1,4 +1,4 @@
-package com.shippingsystem.models;
+package com.shippingsystem.models.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -6,7 +6,6 @@ import com.shippingsystem.Enum.EOrderStatus;
 import lombok.*;
 
 import javax.persistence.*;
-
 
 @Data
 @AllArgsConstructor

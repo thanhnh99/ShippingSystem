@@ -1,14 +1,14 @@
 package com.shippingsystem.services;
 
-import com.shippingsystem.models.Order;
-import com.shippingsystem.models.OrderStatus;
-import com.shippingsystem.models.Stock;
-import com.shippingsystem.models.requestModel.OrderStatusRequest;
+import com.shippingsystem.Enum.EOrderStatus;
+import com.shippingsystem.models.entity.Order;
+import com.shippingsystem.models.entity.OrderStatus;
+import com.shippingsystem.models.entity.Stock;
+import com.shippingsystem.models.request.OrderStatusRequest;
 import com.shippingsystem.models.response.ResponseOneModel;
 import com.shippingsystem.repository.IOrderStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
 
 @Service
 public class OrderStatusService {
@@ -21,16 +21,60 @@ public class OrderStatusService {
     @Autowired
     private StockService stockService;
 
-    public ResponseOneModel<OrderStatus> addOrderStatus(Long orderId, OrderStatusRequest orderStatusRequest)
+    public ResponseOneModel<OrderStatus> addOrderStatus(String orderId, OrderStatusRequest orderStatusRequest)
     {
         ResponseOneModel response = new ResponseOneModel();
         try {
+            /**
+             * Validate Request
+             */
+            Stock stock = null;
+            if(orderStatusRequest.getStatus() == EOrderStatus.IN_STOCK)
+            {
+                if (orderStatusRequest.getStockId()==null)
+                {
+                    response.setStatusCode("411");
+                    response.getMessage().setTitle("Stock is require!!!!");
+                    response.setData(null);
+                    return response;
+                }
+                else {
+                    if(!stockService.findOneById(orderStatusRequest.getStockId()).getStatusCode().equals("200"))
+                    {
+                        response.setStatusCode(stockService.findOneById(orderStatusRequest.getStockId()).getStatusCode());
+                        response.setMessage( stockService.findOneById(orderStatusRequest.getStockId()).getMessage());
+                        return response;
+                    }
+                     stock =  stockService.findOneById(orderStatusRequest.getStockId()).getData();
+                }
+            }
+            if(orderStatusRequest.getStatus() == EOrderStatus.SHIPPING)
+            {
+                if (orderStatusRequest.getShipperId()==null)
+                {
+                    response.setStatusCode("411");
+                    response.getMessage().setTitle("Shipper is require!!!!");
+                    response.setData(null);
+                    return response;
+                }
+                else
+                {
+                    /**
+                     * TODO: SET SHIPPER
+                     */
+//                    if(!UserService.findUserByEmail(orderStatusRequest.getShipperId()).equals("200"))
+//                    {
+//                        response.setStatusCode(stockService.findOneById(orderStatusRequest.getStockId()).getStatusCode());
+//                        response.setMessage( stockService.findOneById(orderStatusRequest.getStockId()).getMessage());
+//                        return response;
+//                    }
+//                    User user =  UserService(orderStatusRequest.getShipperId());
+                }
+            }
+
             if(orderService.findOneById(orderId).getStatusCode().equals("200"))
             {
-                String oneModel = orderService.findOneById(orderId).getStatusCode();
                 Order order = orderService.findOneById(orderId).getData();
-                //TODO: set user
-                Stock stock =  stockService.findOneById(orderStatusRequest.getStockId()).getData();
                 OrderStatus orderStatus = new OrderStatus();
                 orderStatus.setValue(orderStatusRequest.getStatus());
                 orderStatus.setStock(stock);

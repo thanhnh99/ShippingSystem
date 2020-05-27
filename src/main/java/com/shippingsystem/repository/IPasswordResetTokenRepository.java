@@ -1,6 +1,6 @@
 package com.shippingsystem.repository;
 
-import com.shippingsystem.models.PasswordResetToken;
+import com.shippingsystem.models.auth.PasswordResetToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

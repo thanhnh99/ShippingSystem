@@ -1,9 +1,9 @@
 package com.shippingsystem.services;
 
-import com.shippingsystem.models.Order;
-import com.shippingsystem.models.Stock;
-import com.shippingsystem.models.ResponseStatus;
-import com.shippingsystem.models.requestModel.AddNewStockRequest;
+import com.shippingsystem.models.entity.Order;
+import com.shippingsystem.models.entity.Stock;
+import com.shippingsystem.models.auth.ResponseStatus;
+import com.shippingsystem.models.request.AddNewStockRequest;
 import com.shippingsystem.models.response.ResponseBaseModel;
 import com.shippingsystem.models.response.ResponseListModel;
 import com.shippingsystem.models.response.ResponseOneModel;
@@ -72,7 +72,7 @@ public class StockService {
         return response;
     }
 
-    public ResponseOneModel<Stock> findOneById(Long stockId)
+    public ResponseOneModel<Stock> findOneById(String stockId)
     {
         ResponseOneModel<Stock> response = new ResponseOneModel();
         try {

@@ -1,10 +1,10 @@
 package com.shippingsystem.services;
 
 import com.shippingsystem.Enum.EOrderStatus;
-import com.shippingsystem.models.Item;
-import com.shippingsystem.models.Order;
-import com.shippingsystem.models.OrderStatus;
-import com.shippingsystem.models.requestModel.OrderRequest;
+import com.shippingsystem.models.entity.Item;
+import com.shippingsystem.models.entity.Order;
+import com.shippingsystem.models.entity.OrderStatus;
+import com.shippingsystem.models.request.OrderRequest;
 import com.shippingsystem.models.response.ResponseBaseModel;
 import com.shippingsystem.models.response.ResponseListModel;
 import com.shippingsystem.models.response.ResponseOneModel;
@@ -37,10 +37,13 @@ public class OrderService {
     @Autowired
     OrderService orderService;
 
+    @Autowired
+    Payment payment;
+
     public ResponseBaseModel addOrder(OrderRequest orderRequest)
     {
         ResponseBaseModel response = new ResponseBaseModel();
-        ResponseOneModel<Item> itemResponse = itemService.getInfo(orderRequest.getItemType());
+        ResponseOneModel<Item> itemResponse = itemService.getItemByCode(orderRequest.getItemCode());
 
         if(!itemResponse.getStatusCode().equals("200"))
         {
@@ -82,14 +85,16 @@ public class OrderService {
             response.setStatusCode("203");
             response.getMessage().setTitle("Can't save order");
         }
-
+        //TODO : redirect to payment momo
+        String redirectLink = payment.DisplayPaymentScreen(order.getId());
         response.setStatusCode("200");
         response.getMessage().setTitle("successfully");
+        response.getMessage().setContent(redirectLink);
         return response;
 
     }
 
-    public ResponseOneModel editOrder(Long orderId, OrderRequest orderRequest)
+    public ResponseOneModel editOrder(String orderId, OrderRequest orderRequest)
     {
         ResponseOneModel response = new ResponseOneModel();
         try {
@@ -110,7 +115,7 @@ public class OrderService {
                 order.setReceiveAddress(orderRequest.getReceiveAddress());
                 order.setReceivePhone(orderRequest.getReceivePhone());
                 order.setSendAddress(orderRequest.getSendAddress());
-                order.setItem(itemService.getInfo(orderRequest.getItemType()).getData());
+                order.setItem(itemService.getItemByCode(orderRequest.getItemCode()).getData());
                 orderRepository.save(order);
 
                 response.setStatusCode("200");
@@ -125,7 +130,7 @@ public class OrderService {
         return response;
     }
 
-    public ResponseBaseModel deleteOrder(Long id)
+    public ResponseBaseModel deleteOrder(String id)
     {
         ResponseBaseModel response = new ResponseBaseModel();
         try {
@@ -151,11 +156,11 @@ public class OrderService {
         return response;
     }
 
-    public ResponseOneModel<Order> findOneById(Long id)
+    public ResponseOneModel<Order> findOneById(String id)
     {
         ResponseOneModel response = new ResponseOneModel();
         try {
-            Order order = orderRepository.getOne(id);
+            Order order = orderRepository.findById(id).get();
             response.setStatusCode("200");
             response.getMessage().setTitle("OrderStatus.SUCCESSFULLY");
             response.setData(order);

@@ -1,6 +1,6 @@
 package com.shippingsystem.services;
 
-import com.shippingsystem.models.User;
+import com.shippingsystem.models.entity.User;
 import com.shippingsystem.repository.IUserRepository;
 import org.springframework.stereotype.Service;
 

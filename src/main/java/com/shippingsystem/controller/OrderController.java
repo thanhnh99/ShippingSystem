@@ -1,28 +1,19 @@
 package com.shippingsystem.controller;
 
 
-import com.shippingsystem.Enum.EOrderStatus;
-import com.shippingsystem.models.Item;
-import com.shippingsystem.models.Order;
-import com.shippingsystem.models.OrderStatus;
-import com.shippingsystem.models.requestModel.OrderRequest;
-import com.shippingsystem.models.requestModel.OrderStatusRequest;
+import com.shippingsystem.models.entity.OrderStatus;
+import com.shippingsystem.models.request.OrderRequest;
+import com.shippingsystem.models.request.OrderStatusRequest;
 import com.shippingsystem.models.response.ResponseBaseModel;
 import com.shippingsystem.models.response.ResponseListModel;
 import com.shippingsystem.models.response.ResponseOneModel;
 import com.shippingsystem.services.ItemService;
 import com.shippingsystem.services.OrderService;
 import com.shippingsystem.services.OrderStatusService;
-import org.aspectj.lang.annotation.RequiredTypes;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/order")
@@ -49,7 +40,7 @@ public class OrderController {
 
 
     @PutMapping("{order_id}")
-    public  ResponseEntity editOrder(@PathVariable(value = "order_id") Long orderId,
+    public  ResponseEntity editOrder(@PathVariable(value = "order_id") String orderId,
                                        @RequestBody OrderRequest orderRequest)
     {
         ResponseBaseModel response = new ResponseBaseModel();
@@ -61,7 +52,7 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity getOrder(@RequestParam(value = "orderId", required = false) Long orderId,
+    public ResponseEntity getOrder(@RequestParam(value = "orderId", required = false) String orderId,
                                     @RequestParam(value = "sendAddress", required = false)String sendAddress,
                                    @RequestParam(value = "receiveAddress", required = false)String receiveAddress)
     {
@@ -96,7 +87,7 @@ public class OrderController {
 
 
     @DeleteMapping("/{order_id}")
-    public  ResponseEntity deleteOrder(@PathVariable(name = "order_id")Long orderId)
+    public  ResponseEntity deleteOrder(@PathVariable(name = "order_id")String orderId)
     {
         ResponseBaseModel response = new ResponseBaseModel();
         response = orderService.deleteOrder(orderId);
@@ -106,7 +97,7 @@ public class OrderController {
 
 
     @PostMapping("/{order_id}/status")
-    public ResponseEntity updateOrderStatus(@PathVariable(name = "order_id") Long orderId,
+    public ResponseEntity updateOrderStatus(@PathVariable(name = "order_id") String orderId,
                                             @RequestBody OrderStatusRequest orderStatusRequest)
     {
         ResponseOneModel<OrderStatus> response = orderStatusService.addOrderStatus(orderId, orderStatusRequest);

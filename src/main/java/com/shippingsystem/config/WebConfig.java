@@ -1,6 +1,6 @@
 package com.shippingsystem.config;
 
-import com.shippingsystem.models.CustomAuthenticationManager;
+import com.shippingsystem.models.auth.CustomAuthenticationManager;
 import com.shippingsystem.services.JwtAuthenticationEntryPoint;
 import com.shippingsystem.services.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
@@ -39,7 +39,7 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/login",
                         "/user/forgot-password", "/user/register",
                         "/verifying-email", "/verifying-reset-password",
-                        "/public/**").permitAll()
+                        "/public/**","/order","/payment").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()

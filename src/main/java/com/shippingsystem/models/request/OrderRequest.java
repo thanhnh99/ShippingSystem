@@ -1,4 +1,4 @@
-package com.shippingsystem.models.requestModel;
+package com.shippingsystem.models.request;
 
 
 import lombok.AllArgsConstructor;
@@ -15,5 +15,5 @@ public class OrderRequest {
     private String receivePhone;
     private String sendName;
     private String sendAddress;
-    private Long itemType;
+    private String itemCode;
 }

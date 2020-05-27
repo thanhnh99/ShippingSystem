@@ -1,4 +1,4 @@
-package com.shippingsystem.models;
+package com.shippingsystem.models.auth;
 
 import lombok.Data;
 
@@ -11,8 +11,7 @@ import java.util.UUID;
 @Data
 @Entity
 @Table
-public class PasswordResetToken  {
-
+public class VerificationToken  {
     @Id
     private String id;
 
@@ -26,7 +25,7 @@ public class PasswordResetToken  {
     protected LocalDateTime issuedDateTime;
     protected LocalDateTime confirmDateTime;
 
-    public PasswordResetToken(){
+    public VerificationToken(){
         this.token = UUID.randomUUID().toString();
         this.issuedDateTime = LocalDateTime.now();
         this.expiryDateTime = this.issuedDateTime.plusDays(1);

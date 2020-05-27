@@ -1,17 +1,13 @@
 package com.shippingsystem.controller;
 
-import com.shippingsystem.models.Item;
-import com.shippingsystem.models.requestModel.ItemRequest;
+import com.shippingsystem.models.request.ItemRequest;
 import com.shippingsystem.models.response.ResponseBaseModel;
 import com.shippingsystem.models.response.ResponseListModel;
-import com.shippingsystem.models.response.ResponseOneModel;
 import com.shippingsystem.services.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("item")
@@ -44,10 +40,10 @@ public class ItemController {
 
 
     @DeleteMapping("{item_id}")
-    public ResponseEntity deleteItem(@PathVariable(name = "item_id") Long id)
+    public ResponseEntity deleteItem(@PathVariable(name = "item_id") String itemId)
     {
         ResponseBaseModel response = new ResponseBaseModel();
-        response = itemService.deleteItem(id);
+        response = itemService.deleteItem(itemId);
         if(response.getStatusCode().equals("200")) return ResponseEntity.ok().body(response);
         return ResponseEntity.status(203).body(response);
     }

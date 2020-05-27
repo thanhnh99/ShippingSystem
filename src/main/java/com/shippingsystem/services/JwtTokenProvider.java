@@ -1,6 +1,6 @@
 package com.shippingsystem.services;
 
-import com.shippingsystem.models.UserDetailCustom;
+import com.shippingsystem.models.auth.UserDetailCustom;
 import io.jsonwebtoken.*;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

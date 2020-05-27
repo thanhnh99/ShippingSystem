@@ -1,6 +1,6 @@
 package com.shippingsystem.services;
 
-import com.shippingsystem.models.MailProperties;
+import com.shippingsystem.models.auth.MailProperties;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;

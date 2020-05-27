@@ -1,4 +1,4 @@
-package com.shippingsystem.models;
+package com.shippingsystem.models.entity;
 
 
 import lombok.AllArgsConstructor;
