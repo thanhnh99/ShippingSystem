@@ -1,6 +1,7 @@
 package com.shippingsystem.controller;
 
 
+import com.mservice.allinone.models.PaymentResponse;
 import com.shippingsystem.models.entity.OrderStatus;
 import com.shippingsystem.models.request.OrderRequest;
 import com.shippingsystem.models.request.OrderStatusRequest;
@@ -10,6 +11,7 @@ import com.shippingsystem.models.response.ResponseOneModel;
 import com.shippingsystem.services.ItemService;
 import com.shippingsystem.services.OrderService;
 import com.shippingsystem.services.OrderStatusService;
+import com.shippingsystem.services.Payment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,9 @@ public class OrderController {
 
     @Autowired
     private OrderStatusService orderStatusService;
+
+    @Autowired
+    Payment payment;
 
     @PostMapping
     public ResponseEntity addOrder(@RequestBody OrderRequest newOrder)
@@ -85,6 +90,11 @@ public class OrderController {
 
     }
 
+    @GetMapping("/payment/response/{order_id}/{request_id}")
+    public ResponseEntity paymentResponse(@PathVariable String order_id,@PathVariable String request_id)
+    {
+        return payment.DisplayResultPayment(order_id,request_id);
+    }
 
     @DeleteMapping("/{order_id}")
     public  ResponseEntity deleteOrder(@PathVariable(name = "order_id")String orderId)

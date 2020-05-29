@@ -95,11 +95,13 @@
             <version>1.6.2</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/io.github.momo-wallet/momopayment -->
         <dependency>
             <groupId>io.github.momo-wallet</groupId>
             <artifactId>momopayment</artifactId>
             <version>1.0</version>
         </dependency>
+
     </dependencies>
     <repositories>
         <repository>
