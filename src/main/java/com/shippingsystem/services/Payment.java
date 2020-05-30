@@ -5,20 +5,16 @@ import com.google.gson.Gson;
 import com.mservice.allinone.models.*;
 import com.mservice.allinone.processor.allinone.CaptureMoMo;
 import com.mservice.allinone.processor.allinone.QueryStatusTransaction;
-import com.mservice.pay.models.*;
-import com.mservice.pay.processor.notallinone.AppPay;
-import com.mservice.pay.processor.notallinone.POSPay;
-import com.mservice.pay.processor.notallinone.TransactionQuery;
-import com.mservice.pay.processor.notallinone.TransactionRefund;
 import com.mservice.shared.constants.Parameter;
-import com.mservice.shared.constants.RequestType;
 import com.mservice.shared.sharedmodels.Environment;
 import com.mservice.shared.sharedmodels.PartnerInfo;
 import com.mservice.shared.utils.Encoder;
+import com.shippingsystem.Enum.EOrderStatus;
 import com.shippingsystem.models.entity.Order;
+import com.shippingsystem.models.entity.OrderStatus;
+import com.shippingsystem.repository.IOrderStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 
 
@@ -30,6 +26,9 @@ import java.util.Map;
 public class Payment {
     @Autowired
     OrderService orderService;
+
+    @Autowired
+    IOrderStatusRepository orderStatusRepository;
     private EnsureExceptionHandling PaymentResult;
 
     //TODO:Redirect to payment website => make url to redirect
@@ -46,7 +45,7 @@ public class Payment {
 
             String orderInfo = "Pay With MoMo";
             String returnURL = "http://localhost:8083/order/payment/response/"+ order.getId()+"/"+requestId;
-            String notifyURL = "http://localhost:8083/order/payment/ipn_response/"+ order.getId();
+            String notifyURL = "http://localhost:8083/order/payment/response";
             String extraData = "";
             String bankCode = "SML";
 
@@ -56,7 +55,7 @@ public class Payment {
 //      Remember to change the IDs at enviroment.properties file
 
 //        Payment Method- Phương thức thanh toán
-            CaptureMoMoResponse captureMoMoResponse = CaptureMoMo.process(environment, orderId, requestId, Long.toString(amount), orderInfo, returnURL, notifyURL, "");
+            CaptureMoMoResponse captureMoMoResponse = CaptureMoMo.process(environment, orderId, requestId, Long.toString(amount), orderInfo, returnURL,notifyURL,extraData);
             payUrl = captureMoMoResponse.getPayUrl();
 
 ////      Process Payment Result - Xử lý kết quả thanh toán
@@ -68,13 +67,22 @@ public class Payment {
     }
 
     //Todo: payment process
-    public  ResponseEntity RequestPayment(String orderId, String requestId) throws Exception {
-        PartnerInfo devInfo = new PartnerInfo("MOMOAY9520200529", "6spUrkmrwdt1cUPb", "M2YY71K4Crz0QMpvP6Ul9bYHJERpkSsu");
-        Environment environment = new Environment("https://test-payment.momo.vn/gw_payment/transactionProcessor",devInfo, Environment.EnvTarget.DEV);
+    public  void IPNProcess(PayGateResponse response) {
+        try {
+            System.out.println("Xu li IPN");
+            if(response.getErrorCode()==0)
+            {
+                Order order = orderService.findOneById(response.getOrderId()).getData();
+                OrderStatus orderStatus = new OrderStatus();
+                orderStatus.setOrder(order);
+                orderStatus.setValue(EOrderStatus.PAYMENT);
+                orderStatusRepository.save(orderStatus);
+            }
+        }catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+        }
 
-        //Transaction Query - Kiểm tra trạng thái giao dịch
-        QueryStatusTransactionResponse queryStatusTransactionResponse = QueryStatusTransaction.process(environment, orderId, requestId);
-        return (ResponseEntity) ResponseEntity.noContent();
     }
 
     //Todo: return payment result
@@ -95,34 +103,4 @@ public class Payment {
         return (ResponseEntity) ResponseEntity.noContent();
     }
 
-
-    public static String generateRSA(PartnerInfo partnerInfo,
-                                     String orderId,
-                                     String orderInfo,
-                                     Long amount,
-                                     String requestId,
-                                     String returnUrl,
-                                     String notifyUrl,
-                                     String extraData,
-                                     String requestType) throws Exception {
-        // current version of Parameter key name is 2.0
-        Map<String, Object> rawData = new HashMap<String, Object>();
-        rawData.put(Parameter.ACCESS_KEY, partnerInfo.getAccessKey());
-        rawData.put(Parameter.AMOUNT, amount);
-        rawData.put(Parameter.EXTRA_DATA, extraData);
-        rawData.put(Parameter.PARTNER_CODE, partnerInfo.getPartnerCode());
-        rawData.put(Parameter.NOTIFY_URL, notifyUrl);
-        rawData.put(Parameter.ORDER_ID, orderId);
-        rawData.put(Parameter.REQUEST_ID, requestId);
-        rawData.put(Parameter.REQUEST_TYPE, requestType);
-        rawData.put(Parameter.ORDER_INFO, orderInfo);
-        rawData.put(Parameter.RETURN_URL,returnUrl);
-
-        Gson gson = new Gson();
-        String jsonStr = gson.toJson(rawData);
-        byte[] testByte = jsonStr.getBytes(StandardCharsets.UTF_8);
-        String hashRSA = Encoder.encryptRSA(testByte, partnerInfo.getSecretKey());
-
-        return hashRSA;
-    }
 }

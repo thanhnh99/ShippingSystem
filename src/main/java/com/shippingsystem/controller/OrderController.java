@@ -1,6 +1,7 @@
 package com.shippingsystem.controller;
 
 
+import com.mservice.allinone.models.PayGateResponse;
 import com.mservice.allinone.models.PaymentResponse;
 import com.shippingsystem.models.entity.OrderStatus;
 import com.shippingsystem.models.request.OrderRequest;
@@ -94,6 +95,12 @@ public class OrderController {
     public ResponseEntity paymentResponse(@PathVariable String order_id,@PathVariable String request_id)
     {
         return payment.DisplayResultPayment(order_id,request_id);
+    }
+    @PostMapping(value = "/payment/response")
+    public void IPNPayment(@RequestBody PayGateResponse response)
+    {
+        System.out.println("Gui NotifyUrl roi nhe");
+        payment.IPNProcess(response);
     }
 
     @DeleteMapping("/{order_id}")
