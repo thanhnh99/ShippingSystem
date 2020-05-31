@@ -15,5 +15,5 @@ public class OrderRequest {
     private String receivePhone;
     private String sendName;
     private String sendAddress;
-    private int itemType;
+    private Long itemType;
 }

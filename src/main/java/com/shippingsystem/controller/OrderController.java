@@ -1,17 +1,26 @@
 package com.shippingsystem.controller;
 
 
+import com.shippingsystem.Enum.EOrderStatus;
 import com.shippingsystem.models.Item;
 import com.shippingsystem.models.Order;
+import com.shippingsystem.models.OrderStatus;
 import com.shippingsystem.models.requestModel.OrderRequest;
+import com.shippingsystem.models.response.ResponseBaseModel;
+import com.shippingsystem.models.response.ResponseListModel;
+import com.shippingsystem.models.response.ResponseOneModel;
 import com.shippingsystem.services.ItemService;
 import com.shippingsystem.services.OrderService;
+import com.shippingsystem.services.OrderStatusService;
+import org.aspectj.lang.annotation.RequiredTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -23,54 +32,85 @@ public class OrderController {
     @Autowired
     private ItemService itemService;
 
-    @PostMapping("")
+    @Autowired
+    private OrderStatusService orderStatusService;
+
+    @PostMapping
     public ResponseEntity addOrder(@RequestBody OrderRequest newOrder)
     {
+        ResponseBaseModel response = new ResponseBaseModel();
 
+        response = orderService.addOrder(newOrder);
 
-        return ResponseEntity.ok().body(newOrder);
+        if(response.getStatusCode().equals("200")) return ResponseEntity.ok(response);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
-    @GetMapping("")
-    public List<Order> getAllOrder()
-    {
-        return orderService.getAllOrder();
-    }
-
-    @GetMapping("")
-    public Optional<Order> getInfor(@RequestParam(value = "orderId") Long orderId)
-    {
-        return orderService.getInfor(orderId);
-    }
-
-    @GetMapping("")
-    public ResponseEntity findOrderByLocal(@RequestParam(value = "local")String local)
-    {
-        List<Order> orders = orderService.findByReceiveAddress(local);
-        return ResponseEntity.ok().body(orders);
-    }
 
     @PutMapping("{order_id}")
-    public ResponseEntity editOrder(@RequestBody OrderRequest newOrder, @PathVariable(name = "order_id") Long id)
+    public  ResponseEntity editOrder(@PathVariable(value = "order_id") Long orderId,
+                                       @RequestBody OrderRequest orderRequest)
     {
-        if(orderService.getInfor(id) !=null)
+        ResponseBaseModel response = new ResponseBaseModel();
+
+        response = orderService.editOrder(orderId,orderRequest);
+
+        if(response.getStatusCode().equals("200")) return ResponseEntity.ok(response);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity getOrder(@RequestParam(value = "orderId", required = false) Long orderId,
+                                    @RequestParam(value = "sendAddress", required = false)String sendAddress,
+                                   @RequestParam(value = "receiveAddress", required = false)String receiveAddress)
+    {
+        if(orderId!=null)
         {
+            ResponseOneModel response = orderService.findOneById(orderId);
+            if(response.getStatusCode().equals("200"))
+            {
+                return ResponseEntity.ok().body(response);
+            }
+            return ResponseEntity.status(203).body(response);
 
         }
-        return (ResponseEntity) ResponseEntity.notFound();
+        if(receiveAddress!=null)
+        {
+            ResponseListModel response = orderService.findByReceiveAddress(receiveAddress);
+            if(response.getStatusCode().equals("200"))
+            {
+                return ResponseEntity.ok().body(response);
+            }
+            return ResponseEntity.status(203).body(response);
+        }
+
+        ResponseListModel response = orderService.getAll();
+        if(response.getStatusCode().equals("200"))
+        {
+            return ResponseEntity.ok().body(response);
+        }
+        return ResponseEntity.status(203).body(response);
+
     }
 
-    @PutMapping("{order_id}")
-    public ResponseEntity updateStatusOrder(@RequestBody Long status,@PathVariable(name = "order_id") Long orderId)
-    {
-        return (ResponseEntity) ResponseEntity.ok();
-    }
 
     @DeleteMapping("/{order_id}")
     public  ResponseEntity deleteOrder(@PathVariable(name = "order_id")Long orderId)
     {
-        return (ResponseEntity) ResponseEntity.ok();
+        ResponseBaseModel response = new ResponseBaseModel();
+        response = orderService.deleteOrder(orderId);
+        if(response.getStatusCode().equals("200")) return ResponseEntity.ok().body(response);
+        return ResponseEntity.status(203).body(response);
     }
 
+    @PostMapping("/{order_id}/status")
+    public ResponseEntity updateOrderStatus(@PathVariable(name = "order_id") Long orderId,
+                                            @RequestBody EOrderStatus orderStatus)
+    {
+        ResponseOneModel<OrderStatus> response = orderStatusService.addOrderStatus(orderId, orderStatus);
+
+        if(response.getStatusCode().equals("200")) return ResponseEntity.ok().body(response);
+        return ResponseEntity.status(203).body(response);
+    }
 
 }
