@@ -70,7 +70,7 @@ public class UserController {
         if(response.equals(ResponseStatus.SUCCESSFULLY_VERIFY)){
             return "verify_email.html";
         }
-        return "sad";
+        return "verify-fail.html";
     }
 
     @GetMapping("/verifying-reset-password")

@@ -2,9 +2,7 @@ package com.shippingsystem.models;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -13,7 +11,8 @@ import java.util.UUID;
 @Table
 public class VerificationToken  {
     @Id
-    private String id;
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    private Long id;
 
     public static final String STATUS_PENDING = "PENDING";
     public static final String STATUS_VERIFIED = "VERIFIED";
