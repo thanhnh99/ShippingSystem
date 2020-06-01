@@ -45,7 +45,6 @@
             <artifactId>postgresql</artifactId>
             <version>9.1-901.jdbc4</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 
         <dependency>
             <groupId>org.postgresql</groupId>
