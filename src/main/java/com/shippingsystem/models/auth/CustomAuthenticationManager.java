@@ -1,4 +1,4 @@
-package com.shippingsystem.models;
+package com.shippingsystem.models.auth;
 
 import lombok.NoArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;

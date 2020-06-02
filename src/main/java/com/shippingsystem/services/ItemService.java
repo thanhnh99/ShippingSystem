@@ -1,7 +1,7 @@
 package com.shippingsystem.services;
 
-import com.shippingsystem.models.Item;
-import com.shippingsystem.models.requestModel.ItemRequest;
+import com.shippingsystem.models.entity.Item;
+import com.shippingsystem.models.request.ItemRequest;
 import com.shippingsystem.models.response.ResponseBaseModel;
 import com.shippingsystem.models.response.ResponseListModel;
 import com.shippingsystem.models.response.ResponseOneModel;
@@ -20,16 +20,36 @@ public class ItemService {
 
     public ResponseBaseModel addItem(ItemRequest request)
     {
-        Item item = new Item();
-        item.setName(request.getName());
         ResponseBaseModel response = new ResponseBaseModel();
-        try {
-            itemRepository.save(item);
-        }
-        catch (DataIntegrityViolationException e) {
-            response.setStatusCode("404");
-            response.getMessage().setTitle("ItemStatus.FOREIGN_KEY_CONSTRAINT_FAILS!_CAN_NOT_SAVE");
-            return response;
+        try
+        {
+            Item item = itemRepository.findByCode(request.getCode());
+            if(item==null)
+            {
+                Item newItem = new Item();
+                newItem.setName(request.getName());
+                newItem.setCode(request.getCode());
+                newItem.setMultiplicity(request.getMultiplicity());
+                try {
+                    itemRepository.save(newItem);
+                }
+                catch (DataIntegrityViolationException e) {
+                    response.setStatusCode("404");
+                    response.getMessage().setTitle("ItemStatus.FOREIGN_KEY_CONSTRAINT_FAILS!_CAN_NOT_SAVE");
+                    return response;
+                }
+                catch (Exception e)
+                {
+                    response.setStatusCode("203");
+                    response.getMessage().setTitle("ItemStatus.CAN_NOT_SAVE_DATA");
+                }
+            }
+            else
+            {
+                response.setStatusCode("405");
+                response.getMessage().setTitle("ItemStatus.ITEM_EXISTED");
+                return response;
+            }
         }
         catch (Exception e)
         {
@@ -41,14 +61,21 @@ public class ItemService {
         return response;
     }
 
-    public ResponseOneModel<Item> getInfo(Long id)
+    public ResponseOneModel<Item> getItemByCode(String itemCode)
     {
         ResponseOneModel response = new ResponseOneModel();
         try {
-            Item item = itemRepository.findById(id).get();
-            response.setStatusCode("200");
-            response.getMessage().setTitle("ItemStatus.SUCCESSFULLY");
-            response.setData(item);
+            Item item = itemRepository.findByCode(itemCode);
+            if(item != null)
+            {
+                response.setStatusCode("200");
+                response.getMessage().setTitle("ItemStatus.SUCCESSFULLY");
+                response.setData(item);
+                return response;
+            }
+            response.setStatusCode("404");
+            response.getMessage().setTitle("ItemStatus.ITEM_NOT_FOUND");
+            response.setData(null);
         }catch (EntityNotFoundException e)
         {
             response.setStatusCode("404");
@@ -91,7 +118,7 @@ public class ItemService {
         return response;
     }
 
-    public ResponseBaseModel deleteItem(Long id)
+    public ResponseBaseModel deleteItem(String id)
     {
         ResponseBaseModel response = new ResponseBaseModel();
         try {

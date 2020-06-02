@@ -1,11 +1,10 @@
 package com.shippingsystem.services;
 
-import com.shippingsystem.models.ResponseStatus;
-import com.shippingsystem.models.User;
-import com.shippingsystem.models.VerificationToken;
+import com.shippingsystem.models.auth.ResponseStatus;
+import com.shippingsystem.models.entity.User;
+import com.shippingsystem.models.auth.VerificationToken;
 import com.shippingsystem.repository.IUserRepository;
 import com.shippingsystem.repository.IVerificationTokenRepository;
-import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

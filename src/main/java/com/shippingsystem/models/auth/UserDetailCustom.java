@@ -1,5 +1,6 @@
-package com.shippingsystem.models;
+package com.shippingsystem.models.auth;
 
+import com.shippingsystem.models.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,4 +1,4 @@
-package com.shippingsystem.models.requestModel;
+package com.shippingsystem.models.request;
 
 import lombok.Data;
 import javax.validation.constraints.NotNull;

@@ -1,7 +1,11 @@
 package com.shippingsystem.services;
 
-import com.shippingsystem.models.*;
-import com.shippingsystem.models.requestModel.*;
+import com.shippingsystem.models.auth.PasswordResetToken;
+import com.shippingsystem.models.auth.ResponseStatus;
+import com.shippingsystem.models.auth.UserDetailCustom;
+import com.shippingsystem.models.auth.VerificationToken;
+import com.shippingsystem.models.entity.User;
+import com.shippingsystem.models.request.*;
 import com.shippingsystem.models.response.*;
 import com.shippingsystem.repository.IUserRepository;
 import org.springframework.security.authentication.AuthenticationManager;

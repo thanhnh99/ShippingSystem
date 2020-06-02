@@ -1,7 +1,6 @@
-package com.shippingsystem.models;
+package com.shippingsystem.models.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 import javax.persistence.CascadeType;
@@ -17,6 +16,12 @@ public class Item  extends BaseModel{
 
     @Column
     private String name;
+
+    @Column(unique = true)
+    private String code;
+
+    @Column
+    private int multiplicity;
 
     @OneToMany(mappedBy = "item",cascade = CascadeType.ALL)
     private List<Order> orders;

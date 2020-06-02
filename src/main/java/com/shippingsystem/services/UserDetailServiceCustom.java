@@ -1,7 +1,7 @@
 package com.shippingsystem.services;
 
-import com.shippingsystem.models.User;
-import com.shippingsystem.models.UserDetailCustom;
+import com.shippingsystem.models.entity.User;
+import com.shippingsystem.models.auth.UserDetailCustom;
 import com.shippingsystem.repository.IUserRepository;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

@@ -1,18 +1,14 @@
 package com.shippingsystem.services;
 
 import com.shippingsystem.Enum.EOrderStatus;
-import com.shippingsystem.models.Order;
-import com.shippingsystem.models.OrderStatus;
+import com.shippingsystem.models.entity.Order;
+import com.shippingsystem.models.entity.OrderStatus;
+import com.shippingsystem.models.entity.Stock;
+import com.shippingsystem.models.request.OrderStatusRequest;
 import com.shippingsystem.models.response.ResponseOneModel;
-import com.shippingsystem.repository.IOrderRepository;
 import com.shippingsystem.repository.IOrderStatusRepository;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collector;
 
 @Service
 public class OrderStatusService {
@@ -22,20 +18,67 @@ public class OrderStatusService {
     @Autowired
     private OrderService orderService;
 
-    public Optional<OrderStatus> getInfo(Long id)
-    {
-        return iOrderStatusRepository.findById(id);
-    }
+    @Autowired
+    private StockService stockService;
 
-    public ResponseOneModel<OrderStatus> addOrderStatus(Long orderId, EOrderStatus orderStatusRequest)
+    public ResponseOneModel<OrderStatus> addOrderStatus(String orderId, OrderStatusRequest orderStatusRequest)
     {
         ResponseOneModel response = new ResponseOneModel();
         try {
+            /**
+             * Validate Request
+             */
+            Stock stock = null;
+            if(orderStatusRequest.getStatus() == EOrderStatus.IN_STOCK)
+            {
+                if (orderStatusRequest.getStockId()==null)
+                {
+                    response.setStatusCode("411");
+                    response.getMessage().setTitle("Stock is require!!!!");
+                    response.setData(null);
+                    return response;
+                }
+                else {
+                    if(!stockService.findOneById(orderStatusRequest.getStockId()).getStatusCode().equals("200"))
+                    {
+                        response.setStatusCode(stockService.findOneById(orderStatusRequest.getStockId()).getStatusCode());
+                        response.setMessage( stockService.findOneById(orderStatusRequest.getStockId()).getMessage());
+                        return response;
+                    }
+                     stock =  stockService.findOneById(orderStatusRequest.getStockId()).getData();
+                }
+            }
+            if(orderStatusRequest.getStatus() == EOrderStatus.SHIPPING)
+            {
+                if (orderStatusRequest.getShipperId()==null)
+                {
+                    response.setStatusCode("411");
+                    response.getMessage().setTitle("Shipper is require!!!!");
+                    response.setData(null);
+                    return response;
+                }
+                else
+                {
+                    /**
+                     * TODO: SET SHIPPER
+                     */
+//                    if(!UserService.findUserByEmail(orderStatusRequest.getShipperId()).equals("200"))
+//                    {
+//                        response.setStatusCode(stockService.findOneById(orderStatusRequest.getStockId()).getStatusCode());
+//                        response.setMessage( stockService.findOneById(orderStatusRequest.getStockId()).getMessage());
+//                        return response;
+//                    }
+//                    User user =  UserService(orderStatusRequest.getShipperId());
+                }
+            }
+
             if(orderService.findOneById(orderId).getStatusCode().equals("200"))
             {
                 Order order = orderService.findOneById(orderId).getData();
                 OrderStatus orderStatus = new OrderStatus();
-                orderStatus.setValue(orderStatusRequest);
+                orderStatus.setValue(orderStatusRequest.getStatus());
+                orderStatus.setStock(stock);
+
                 orderStatus.setOrder(order);
                 iOrderStatusRepository.save(orderStatus);
 
@@ -56,10 +99,5 @@ public class OrderStatusService {
             response.getMessage().setTitle("Can't change order status");
         }
         return response;
-    }
-
-    public  void addOrderStatus(OrderStatus orderStatus)
-    {
-            iOrderStatusRepository.save(orderStatus);
     }
 }

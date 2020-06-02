@@ -1,5 +1,6 @@
-package com.shippingsystem.models;
+package com.shippingsystem.models.entity;
 
+import com.shippingsystem.models.request.OrderRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,16 +12,16 @@ import java.util.Collection;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User extends BaseModel{
+public class User extends BaseModel {
 
     @Column
     private String email;
 
     @Column
-    private  String username;
+    private String username;
 
     @Column
-    private String  address;
+    private String address;
 
     @Column
     private String password;
@@ -29,7 +30,7 @@ public class User extends BaseModel{
     private boolean isEnable;
 
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Collection<Order> orders;
 
     @OneToOne(mappedBy = "shipper")

@@ -1,10 +1,10 @@
 package com.shippingsystem.controller;
 
-import com.shippingsystem.models.ResponseStatus;
-import com.shippingsystem.models.requestModel.LoginRequest;
-import com.shippingsystem.models.requestModel.NewPasswordRequest;
-import com.shippingsystem.models.requestModel.PasswordResetRequest;
-import com.shippingsystem.models.requestModel.RegistrationRequest;
+import com.shippingsystem.models.auth.ResponseStatus;
+import com.shippingsystem.models.request.LoginRequest;
+import com.shippingsystem.models.request.NewPasswordRequest;
+import com.shippingsystem.models.request.PasswordResetRequest;
+import com.shippingsystem.models.request.RegistrationRequest;
 import com.shippingsystem.models.response.*;
 import com.shippingsystem.services.UserService;
 import com.shippingsystem.services.VerificationTokenRegistrationService;

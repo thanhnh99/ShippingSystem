@@ -1,20 +1,18 @@
-package com.shippingsystem.models;
+package com.shippingsystem.models.auth;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
 @Entity
 @Table
-public class PasswordResetToken  {
-
+public class VerificationToken  {
     @Id
-    private String id;
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    private Long id;
 
     public static final String STATUS_PENDING = "PENDING";
     public static final String STATUS_VERIFIED = "VERIFIED";
@@ -26,7 +24,7 @@ public class PasswordResetToken  {
     protected LocalDateTime issuedDateTime;
     protected LocalDateTime confirmDateTime;
 
-    public PasswordResetToken(){
+    public VerificationToken(){
         this.token = UUID.randomUUID().toString();
         this.issuedDateTime = LocalDateTime.now();
         this.expiryDateTime = this.issuedDateTime.plusDays(1);
