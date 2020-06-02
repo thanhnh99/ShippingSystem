@@ -62,6 +62,7 @@ public class UserService {
                 final String token = jwtTokenProvider.generateToken(userDetails);
                 response.setStatus(ResponseStatus.ACCEPT);
                 response.setToken(token);
+                response.setRole(userDetails.getAuthorities());
             } else
                 response.setStatus(ResponseStatus.ACCOUNT_IS_INACTIVE);
         }
@@ -71,7 +72,6 @@ public class UserService {
 
     public RegistrationResponse registerNewAccount(RegistrationRequest request){
         RegistrationResponse response = new RegistrationResponse();
-        response.setEmail(request.getEmail());
 
         if(registrationService.checkForExistingAccount(request.getEmail())){
             response.setStatus(ResponseStatus.EMAIL_ALREADY_EXISTS);
@@ -83,8 +83,9 @@ public class UserService {
                         request.getUsername());
             }  else {
                 registrationService.createNewAccount(request.getEmail(),
+                        request.getUsername(),
                         request.getPassword(),
-                        request.getUsername());
+                        request.getAddress());
             }
 
             if(!sendingTokenToVerifyEmail(request.getEmail())) {

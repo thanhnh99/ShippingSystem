@@ -1,12 +1,13 @@
 package com.shippingsystem.models.entity;
 
-import com.shippingsystem.models.request.OrderRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Data
@@ -39,9 +40,12 @@ public class User extends BaseModel {
     @ManyToMany(mappedBy = "users")
     private Collection<Role> roles;
 
-    public User(String email, String username, String password) {
+    public User(String email, String username, String password, String adress,Role role) {
         this.email = email;
         this.username = username;
         this.password = password;
+        this.address = adress;
+        this.roles = new ArrayList<Role>();
+        this.roles.add(role);
     }
 }

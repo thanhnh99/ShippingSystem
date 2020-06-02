@@ -1,11 +1,18 @@
 package com.shippingsystem.services;
 
+import com.shippingsystem.models.entity.Role;
 import com.shippingsystem.models.entity.User;
+import com.shippingsystem.repository.IRoleRepository;
 import com.shippingsystem.repository.IUserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Collection;
 
 @Service
 public class RegistrationService {
+    @Autowired
+    IRoleRepository roleRepository;
 
     private final IUserRepository userRepository;
 
@@ -21,8 +28,9 @@ public class RegistrationService {
         else return false;
     }
 
-    public void createNewAccount(String email, String password, String username){
-        User user = new User(email, username, password);
+    public void createNewAccount(String email, String password, String username, String adress){
+        Role role = roleRepository.findByName("USER");
+        User user = new User(email, username, password, adress,role);
         user.setEnable(false);
         userRepository.save(user);
     }

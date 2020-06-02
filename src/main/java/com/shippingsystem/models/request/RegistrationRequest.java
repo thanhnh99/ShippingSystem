@@ -11,5 +11,6 @@ public class RegistrationRequest {
     String username;
     @NotNull
     String password;
-
+    @NotNull
+    String address;
 }
