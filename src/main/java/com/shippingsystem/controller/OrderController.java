@@ -4,6 +4,7 @@ package com.shippingsystem.controller;
 import com.mservice.allinone.models.PayGateResponse;
 import com.mservice.allinone.models.PaymentResponse;
 import com.shippingsystem.models.entity.OrderStatus;
+import com.shippingsystem.models.request.IpnMomo;
 import com.shippingsystem.models.request.OrderRequest;
 import com.shippingsystem.models.request.OrderStatusRequest;
 import com.shippingsystem.models.response.ResponseBaseModel;
@@ -13,8 +14,10 @@ import com.shippingsystem.services.ItemService;
 import com.shippingsystem.services.OrderService;
 import com.shippingsystem.services.OrderStatusService;
 import com.shippingsystem.services.Payment;
+import org.apache.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -94,12 +97,14 @@ public class OrderController {
     @GetMapping("/payment/response/{order_id}/{request_id}")
     public ResponseEntity paymentResponse(@PathVariable String order_id,@PathVariable String request_id)
     {
-        return payment.DisplayResultPayment(order_id,request_id);
+        ResponseOneModel response = new ResponseOneModel();
+        response.setData(payment.DisplayResultPayment(order_id,request_id));
+        return ResponseEntity.ok(response);
     }
-    @PostMapping(value = "/payment/response")
-    public void IPNPayment(@RequestBody PayGateResponse response)
+    @PostMapping(value = "/payment/response", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
+            produces = {MediaType.APPLICATION_ATOM_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public void IPNPayment(IpnMomo response)
     {
-        System.out.println("Gui NotifyUrl roi nhe");
         payment.IPNProcess(response);
     }
 
