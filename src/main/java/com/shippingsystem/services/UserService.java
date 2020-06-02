@@ -77,7 +77,7 @@ public class UserService {
             response.setStatus(ResponseStatus.EMAIL_ALREADY_EXISTS);
         } else {
             User user = userRepository.findByEmail(request.getEmail());
-            if(user != null ) {
+            if(user != null  ) {
                 registrationService.createNewVerifyToken(request.getEmail(),
                         request.getPassword(),
                         request.getUsername());
