@@ -103,7 +103,7 @@ public class OrderController {
     }
     @PostMapping(value = "/payment/response", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
             produces = {MediaType.APPLICATION_ATOM_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public void IPNPayment(@RequestBody IpnMomo response)
+    public void IPNPayment(IpnMomo response)
     {
         payment.IPNProcess(response);
     }
