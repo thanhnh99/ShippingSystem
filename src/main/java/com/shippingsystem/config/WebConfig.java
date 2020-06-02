@@ -40,7 +40,10 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                 .cors()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/**").permitAll()
+                .antMatchers("/user/login",
+                        "/user/forgot-password", "/user/register",
+                        "/verifying-email", "/verifying-reset-password",
+                        "/public/**","/order/**","/payment").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
