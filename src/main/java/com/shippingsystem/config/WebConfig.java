@@ -42,7 +42,7 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/user/login",
                         "/user/forgot-password", "/user/register",
-                        "/verifying-email", "/verifying-reset-password",
+                        "/user/verifying-email", "/user/verifying-reset-password",
                         "/public/**","/order/**","/payment").permitAll()
                 .antMatchers("/stock/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
