@@ -39,6 +39,7 @@ public class SendingMailService {
             Template t = templates.getTemplate("email-verification.ftl");
             Map<String, String> map = new HashMap<>();
             map.put("VERIFICATION_URL", mailProperties.getVerificationApi() + verificationCode);
+            System.out.println(mailProperties.getVerificationApi());
             body = FreeMarkerTemplateUtils.processTemplateIntoString(t,map);
         } catch (IOException e) {
             return false;
@@ -56,6 +57,7 @@ public class SendingMailService {
             Template resetPasswordTemplate = templates.getTemplate("email-passwordreset.ftl");
             Map<String, String> map = new HashMap<>();
             map.put("TO_EMAIL", toEmail);
+
             map.put("PASSWORD_RESET_URL", mailProperties.getPassworsResetUrl() + passwordForgotToken);
             body = FreeMarkerTemplateUtils.processTemplateIntoString(resetPasswordTemplate, map);
         } catch (IOException e) {
