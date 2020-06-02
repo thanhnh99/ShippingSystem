@@ -41,9 +41,9 @@ public class SendingMailService {
             map.put("VERIFICATION_URL", mailProperties.getVerificationApi() + verificationCode);
             body = FreeMarkerTemplateUtils.processTemplateIntoString(t,map);
         } catch (IOException e) {
-            e.printStackTrace();
+            return false;
         } catch (TemplateException e) {
-            e.printStackTrace();
+            return false;
         }
         return sendMail(toEMail, subject, body);
     }
@@ -56,12 +56,12 @@ public class SendingMailService {
             Template resetPasswordTemplate = templates.getTemplate("email-passwordreset.ftl");
             Map<String, String> map = new HashMap<>();
             map.put("TO_EMAIL", toEmail);
-            map.put("PASSWORD_RESET_URL", url + "/verifying-reset-password?token=" + passwordForgotToken);
+            map.put("PASSWORD_RESET_URL", mailProperties.getPassworsResetUrl() + passwordForgotToken);
             body = FreeMarkerTemplateUtils.processTemplateIntoString(resetPasswordTemplate, map);
         } catch (IOException e) {
-            e.printStackTrace();
+            return false;
         } catch (TemplateException e) {
-            e.printStackTrace();
+            return false;
         }
         return sendMail(toEmail, subject, body);
     }
@@ -92,8 +92,7 @@ public class SendingMailService {
             message.setSubject(subject);
             message.setContent(content, "text/html");
             Transport.send(message);
-        } catch (MessagingException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
             return false;
         }
         return true;

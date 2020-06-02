@@ -4,10 +4,12 @@ import com.shippingsystem.models.auth.UserDetailCustom;
 import io.jsonwebtoken.*;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -25,6 +27,7 @@ public class JwtTokenProvider {
 
         return Jwts.builder()
                 .setSubject(userDetailCustom.getUser().getEmail())
+                .claim("ROLE", userDetailCustom.getAuthorities())
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, JWT_SECRET)

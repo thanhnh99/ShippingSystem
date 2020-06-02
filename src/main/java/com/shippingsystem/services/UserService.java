@@ -114,7 +114,7 @@ public class UserService {
         if(passwordResetToken == null){
             response.setStatus(ResponseStatus.HAVE_NOT_ACCOUNT);
         } else {
-            String url = "localhost:8084/user";
+            String url = "https://shippingsys.herokuapp.com/user";
             if(sendingMailService.sendPasswordResetMail(request.getEmail(),passwordResetToken.getToken(), url)){
                 response.setStatus(ResponseStatus.SENT_EMAIL);
             }

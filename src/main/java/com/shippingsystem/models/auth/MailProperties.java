@@ -21,6 +21,6 @@ public class MailProperties {
     private String from;
     private String fromName;
     private String verificationApi;
-
+    private String passworsResetUrl;
 
 }

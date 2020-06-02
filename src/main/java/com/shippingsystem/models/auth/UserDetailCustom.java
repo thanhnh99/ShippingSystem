@@ -1,5 +1,6 @@
 package com.shippingsystem.models.auth;
 
+import com.shippingsystem.models.entity.Role;
 import com.shippingsystem.models.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,6 +12,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
@@ -21,8 +25,8 @@ public class UserDetailCustom implements UserDetails {
     User user;
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
+    public List getAuthorities() {
+        return user.getRoles().stream().map(Role::getName).collect(Collectors.toList());
     }
 
     @Override
