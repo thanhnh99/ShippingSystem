@@ -114,8 +114,7 @@ public class UserService {
         if(passwordResetToken == null){
             response.setStatus(ResponseStatus.HAVE_NOT_ACCOUNT);
         } else {
-            String url = "https://shippingsys.herokuapp.com/user";
-            if(sendingMailService.sendPasswordResetMail(request.getEmail(),passwordResetToken.getToken(), url)){
+            if(sendingMailService.sendPasswordResetMail(request.getEmail(),passwordResetToken.getToken())){
                 response.setStatus(ResponseStatus.SENT_EMAIL);
             }
             else response.setStatus(ResponseStatus.ERROR);

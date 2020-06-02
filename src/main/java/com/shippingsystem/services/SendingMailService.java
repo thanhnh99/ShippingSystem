@@ -39,17 +39,18 @@ public class SendingMailService {
             Template t = templates.getTemplate("email-verification.ftl");
             Map<String, String> map = new HashMap<>();
             map.put("VERIFICATION_URL", mailProperties.getVerificationApi() + verificationCode);
-            System.out.println(mailProperties.getVerificationApi());
             body = FreeMarkerTemplateUtils.processTemplateIntoString(t,map);
         } catch (IOException e) {
+            e.printStackTrace();
             return false;
         } catch (TemplateException e) {
+            e.printStackTrace();
             return false;
         }
         return sendMail(toEMail, subject, body);
     }
 
-    public boolean sendPasswordResetMail(String toEmail, String passwordForgotToken, String url){
+    public boolean sendPasswordResetMail(String toEmail, String passwordForgotToken){
         String subject = "Your password reset request";
         String body = "";
 
@@ -74,8 +75,6 @@ public class SendingMailService {
         prop.put("mail.smtp.port", mailProperties.getSmtp().getPort());
         prop.put("mail.smtp.auth", "true");
         prop.put("mail.smtp.starttls.enable", "true");
-
-        System.out.println(mailProperties.getSmtp().getUsername() + " " + mailProperties.getSmtp().getPassword());
 
         Session session = Session.getInstance(prop,
                 new javax.mail.Authenticator() {
