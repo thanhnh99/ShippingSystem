@@ -73,6 +73,8 @@ public class SendingMailService {
         prop.put("mail.smtp.auth", "true");
         prop.put("mail.smtp.starttls.enable", "true");
 
+        System.out.println(mailProperties.getSmtp().getUsername() + " " + mailProperties.getSmtp().getPassword());
+
         Session session = Session.getInstance(prop,
                 new javax.mail.Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
