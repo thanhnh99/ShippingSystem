@@ -1,5 +1,6 @@
 package com.shippingsystem.models.entity;
 
+import com.shippingsystem.models.auth.GranAuthorityImpl;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Data
@@ -48,4 +50,11 @@ public class User extends BaseModel {
         this.roles = new ArrayList<Role>();
         this.roles.add(role);
     }
+
+    public List<GranAuthorityImpl> getRoles(){
+        return this.roles.stream().map(role -> {
+            return new GranAuthorityImpl(role.getRoleName());
+        }).collect(Collectors.toList());
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.shippingsystem.models.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,10 +14,11 @@ import java.util.Collection;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties("users")
 public class Role extends BaseModel{
 
     @Column
-    private String name;
+    private String roleName;
 
     @ManyToMany
     @JoinTable(name = "user_role",//tạo ra bằng join

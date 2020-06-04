@@ -6,5 +6,6 @@ import lombok.Data;
 public class AddNewStockRequest {
     private String address;
     private String name;
-    private int status;
+    private int acreage;
+    private long totalOrder;
 }

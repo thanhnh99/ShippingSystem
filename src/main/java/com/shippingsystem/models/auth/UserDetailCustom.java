@@ -25,8 +25,8 @@ public class UserDetailCustom implements UserDetails {
     User user;
 
     @Override
-    public List getAuthorities() {
-        return user.getRoles().stream().map(Role::getName).collect(Collectors.toList());
+    public List<GranAuthorityImpl> getAuthorities() {
+        return user.getRoles();
     }
 
     @Override

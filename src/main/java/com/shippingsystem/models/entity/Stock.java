@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.context.annotation.Configuration;
 
 import javax.persistence.*;
 
@@ -16,11 +17,6 @@ import javax.persistence.*;
 @JsonIgnoreProperties("orderStatus")
 public class Stock extends BaseModel{
 
-    public Stock(String name, String address, int status) {
-        this.name = name;
-        this.address = address;
-        this.status = status;
-    }
 
     @Column
     private String name;
@@ -29,8 +25,11 @@ public class Stock extends BaseModel{
     private  String address;
 
     @Column
-    private int status;
+    private boolean status;
 
-    @OneToOne(mappedBy = "stock")
-    private OrderStatus orderStatus;
+    @Column
+    private double acreage;
+
+    private long totalOrder;
+
 }

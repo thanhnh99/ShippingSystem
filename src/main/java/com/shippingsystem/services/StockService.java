@@ -1,6 +1,7 @@
 package com.shippingsystem.services;
 
 import com.shippingsystem.models.entity.Order;
+import com.shippingsystem.models.entity.OrderStatus;
 import com.shippingsystem.models.entity.Stock;
 import com.shippingsystem.models.auth.ResponseStatus;
 import com.shippingsystem.models.request.AddNewStockRequest;
@@ -22,9 +23,12 @@ public class StockService {
     private IStockRepository stockRepository;
 
     public ResponseBaseModel addNewStock(AddNewStockRequest request) {
-        Stock newStock = new Stock(request.getAddress(),
-                                   request.getName(),
-                                   request.getStatus());
+        Stock newStock = new Stock(request.getName(),
+                                   request.getAddress(),
+                                   true,
+                                   request.getAcreage(),
+                                   request.getTotalOrder(),
+                                   null);
 
         newStock.setCreated_at(new Date());
 

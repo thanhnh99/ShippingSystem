@@ -41,8 +41,7 @@ public class UserController {
     }
 
     @PostMapping("/verifying-reset-password")
-    public ResponseEntity setNewPassword(@RequestParam("token") String token, @RequestBody NewPasswordRequest request){
-        System.out.println(token);
+    public ResponseEntity setNewPassword(@RequestBody NewPasswordRequest request){
         NewPasswordResponse response = userService.setNewPassword(request);
         if(response.getStatus() == ResponseStatus.SAVED_NEW_PASSWORD){
             return new ResponseEntity(response, HttpStatus.OK);

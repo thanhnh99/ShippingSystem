@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 
 @Service
 public class RegistrationService {
@@ -29,10 +30,12 @@ public class RegistrationService {
     }
 
     public void createNewAccount(String email, String password, String username, String adress){
-        Role role = roleRepository.findByName("USER");
+        Role role = roleRepository.getFirstByRoleName("USER");
         User user = new User(email, username, password, adress,role);
         user.setEnable(false);
+        role.getUsers().add(user);
         userRepository.save(user);
+        roleRepository.save(role);
     }
 
     public void createNewVerifyToken(String email, String password, String username) {

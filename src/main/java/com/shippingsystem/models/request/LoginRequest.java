@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
@@ -14,6 +15,7 @@ public class LoginRequest {
     @Getter
     @Setter
     @NotNull
+    @Email
     private String email;
 
     @Getter @Setter

@@ -29,5 +29,4 @@ public class OrderStatus extends BaseModel {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="shipper_id", referencedColumnName = "id")
     private User shipper;
-
 }

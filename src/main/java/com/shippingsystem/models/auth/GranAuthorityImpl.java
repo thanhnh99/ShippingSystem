@@ -8,10 +8,10 @@ import org.springframework.security.core.GrantedAuthority;
 public class GranAuthorityImpl implements GrantedAuthority {
 
     private String authority;
-    @Getter
-    public final String ROLE_USER = "ROLE_USER";
-    @Getter
-    public final String ROLE_ADMIN = "ROLE_ADMIN";
+
+    public static final String ROLE_USER = "ROLE_USER";
+
+    public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
     @Override
     public String getAuthority() {
