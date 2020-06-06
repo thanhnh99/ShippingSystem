@@ -1,4 +1,4 @@
-package com.shippingsystem.controller;
+package com.shippingsystem.controller.adminApi;
 
 import com.shippingsystem.models.request.AddNewStockRequest;
 import com.shippingsystem.models.response.ResponseBaseModel;
@@ -10,8 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/stock")
-public class StockController {
+@RequestMapping("admin/stock")
+public class StockControllerAdmin {
 
     @Autowired
     private StockService stockService;

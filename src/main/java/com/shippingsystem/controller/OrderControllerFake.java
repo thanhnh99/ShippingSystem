@@ -21,9 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/order")
-public class OrderController {
+public class OrderControllerFake {
     @Autowired
     private OrderService orderService;
 
@@ -48,17 +46,6 @@ public class OrderController {
     }
 
 
-    @PutMapping("{order_id}")
-    public  ResponseEntity editOrder(@PathVariable(value = "order_id") String orderId,
-                                       @RequestBody OrderRequest orderRequest)
-    {
-        ResponseBaseModel response = new ResponseBaseModel();
-
-        response = orderService.editOrder(orderId,orderRequest);
-
-        if(response.getStatusCode().equals("200")) return ResponseEntity.ok(response);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-    }
 
     @GetMapping
     public ResponseEntity getOrder(@RequestParam(value = "orderId", required = false) String orderId,
@@ -94,6 +81,18 @@ public class OrderController {
 
     }
 
+
+    @PostMapping("/{order_id}/status")
+    public ResponseEntity updateOrderStatus(@PathVariable(name = "order_id") String orderId,
+                                            @RequestBody OrderStatusRequest orderStatusRequest)
+    {
+        ResponseOneModel<OrderStatus> response = orderStatusService.addOrderStatus(orderId, orderStatusRequest);
+
+        if(response.getStatusCode().equals("200")) return ResponseEntity.ok().body(response);
+        return ResponseEntity.status(203).body(response);
+    }
+
+
     @GetMapping("/payment/response/{order_id}/{request_id}")
     public ResponseEntity paymentResponse(@PathVariable String order_id,@PathVariable String request_id)
     {
@@ -117,15 +116,5 @@ public class OrderController {
         return ResponseEntity.status(203).body(response);
     }
 
-
-    @PostMapping("/{order_id}/status")
-    public ResponseEntity updateOrderStatus(@PathVariable(name = "order_id") String orderId,
-                                            @RequestBody OrderStatusRequest orderStatusRequest)
-    {
-        ResponseOneModel<OrderStatus> response = orderStatusService.addOrderStatus(orderId, orderStatusRequest);
-
-        if(response.getStatusCode().equals("200")) return ResponseEntity.ok().body(response);
-        return ResponseEntity.status(203).body(response);
-    }
 
 }

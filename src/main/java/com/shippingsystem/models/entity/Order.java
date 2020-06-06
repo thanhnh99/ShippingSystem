@@ -1,7 +1,10 @@
 package com.shippingsystem.models.entity;
 
 import com.shippingsystem.models.request.OrderRequest;
+import com.shippingsystem.repository.IItemRepository;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;

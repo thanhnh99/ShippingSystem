@@ -4,6 +4,7 @@ import com.shippingsystem.Enum.EOrderStatus;
 import com.shippingsystem.models.entity.Item;
 import com.shippingsystem.models.entity.Order;
 import com.shippingsystem.models.entity.OrderStatus;
+import com.shippingsystem.models.entity.User;
 import com.shippingsystem.models.request.OrderRequest;
 import com.shippingsystem.models.response.ResponseBaseModel;
 import com.shippingsystem.models.response.ResponseListModel;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -39,6 +41,11 @@ public class OrderService {
 
     @Autowired
     Payment payment;
+
+    @Autowired
+    UserService userService;
+
+
 
     public ResponseBaseModel addOrder(OrderRequest orderRequest)
     {
@@ -94,7 +101,7 @@ public class OrderService {
 
     }
 
-    public ResponseOneModel editOrder(String orderId, OrderRequest orderRequest)
+    public ResponseOneModel editOrderInfo(String orderId, OrderRequest request, String email)
     {
         ResponseOneModel response = new ResponseOneModel();
         try {
@@ -110,13 +117,23 @@ public class OrderService {
                 response.getMessage().setTitle("not access");
             }
             else {
-                order.setName(orderRequest.getName());
-                order.setReceiveName(orderRequest.getReceiveName());
-                order.setReceiveAddress(orderRequest.getReceiveAddress());
-                order.setReceivePhone(orderRequest.getReceivePhone());
-                order.setSendAddress(orderRequest.getSendAddress());
-                order.setItem(itemService.getItemByCode(orderRequest.getItemCode()).getData());
-                orderRepository.save(order);
+                List<Order> ordersByEmail = this.getOrderByEmail(email).getData();
+                for(int i = 0; i<ordersByEmail.size();i++)
+                {
+                    if(ordersByEmail.get(i).getId().equals(orderId))
+                    {
+                        ordersByEmail.get(i).setName(request.getName());
+                        ordersByEmail.get(i).setReceiveAddress(request.getReceiveAddress());
+                        ordersByEmail.get(i).setReceiveName(request.getReceiveName());
+                        ordersByEmail.get(i).setReceivePhone(request.getReceivePhone());
+                        ordersByEmail.get(i).setSendAddress(request.getSendAddress());
+                        ordersByEmail.get(i).setUpdated_at(new Date());
+                        ordersByEmail.get(i).setUpdated_by(userService.findUserByEmail(email).getId());
+                        ordersByEmail.get(i).setSendPhone(request.getSendName());
+                        orderRepository.save(ordersByEmail.get(i));
+                        break;
+                    }
+                }
 
                 response.setStatusCode("200");
                 response.getMessage().setTitle("successfully");
@@ -215,6 +232,156 @@ public class OrderService {
         response.setStatusCode("200");
         response.getMessage().setTitle("OrderStatus.SUCCESSFULLY");
         response.setData(orders);
+        return response;
+    }
+
+    public  ResponseListModel getOrderByEmail(String email)
+    {
+        ResponseListModel response = new ResponseListModel<>();
+        try {
+            User user = userService.findUserByEmail(email);
+            List<Order> orders = (List<Order>) user.getOrders();
+            response.setStatusCode("200");
+            response.getMessage().setTitle("Successfully");
+            response.setData(orders);
+            return response;
+        }catch (Exception e)
+        {
+            response.setStatusCode("400");
+            response.getMessage().setTitle("Bad request getOrderByEmail!!!");
+            response.setData(null);
+            return response;
+        }
+    }
+
+
+    //Lấy ra những order mà thằng Shipper đã nhận giao hàng
+    public  ResponseListModel getOrderShipperByEmail(String email)
+    {
+        ResponseListModel response = new ResponseListModel<>();
+        try {
+            List<Order> orders = orderRepository.findOrderOfShipper(email);
+            response.setStatusCode("200");
+            response.getMessage().setTitle("Successfully");
+            response.setData(orders);
+            return response;
+        }catch (Exception e)
+        {
+            response.setStatusCode("400");
+            response.getMessage().setTitle("Bad request getOrderByEmail!!! file OrderService.java; line " +e.getStackTrace()[0].getLineNumber());
+            response.setData(null);
+            return response;
+        }
+    }
+    /**
+     * Lấy ra những order mà Shipper có thể nhận giao hàng.
+     */
+    public ResponseListModel getResponsibleAbleOrder(String sendAddress, String receiveAddress)
+    {
+        ResponseListModel response = new ResponseListModel<>();
+        List<Order> orders = null;
+        try {
+
+            if(sendAddress == null && receiveAddress != null)
+            {
+                orders = orderRepository.findByReceiveAddressNotComplete(receiveAddress);
+            }
+            else if(sendAddress != null && receiveAddress == null)
+            {
+                orders = orderRepository.findBySendAddressNotComplete(receiveAddress);
+            }
+            else if(sendAddress != null && receiveAddress != null)
+            {
+                orders = orderRepository.findBySendAddressAndReceiveAddressNotComplete(sendAddress,receiveAddress);
+            }
+            else
+            {
+                orders = orderRepository.findOrderNotComplete();
+            }
+            response.setStatusCode("200");
+            response.getMessage().setTitle("Successfully");
+            response.setData(orders);
+            return response;
+        }catch (Exception e)
+        {
+            response.setStatusCode("400");
+            response.getMessage().setTitle("Bad request getResponsibleAbleOrder!!! file OrderService.java; line " +e.getStackTrace()[0].getLineNumber());
+            response.setData(null);
+            return response;
+        }
+    }
+
+    public ResponseOneModel ResponsibleOrder(String order_id,String email)
+    {
+        ResponseOneModel response = new ResponseOneModel();
+        try {
+            List<OrderStatus> orderStatuses = orderStatusRepository.getOrderStatusByOrOrderById(order_id);
+            if(orderStatuses.get(orderStatuses.size()-1).getValue().equals(EOrderStatus.SHIPPING)||
+                    orderStatuses.get(orderStatuses.size()-1).getValue().equals(EOrderStatus.CANCEL)||
+                    orderStatuses.get(orderStatuses.size()-1).getValue().equals(EOrderStatus.PICKUP)||
+                    orderStatuses.get(orderStatuses.size()-1).getValue().equals(EOrderStatus.COMPLETE))
+            {
+                response.setStatusCode("403");
+                response.getMessage().setTitle("not access");
+                response.setData(null);
+            }
+            else
+            {
+                Order order = orderRepository.findById(order_id).get();
+                User shipper = userService.findUserByEmail(email);
+                OrderStatus orderStatus = new OrderStatus();
+                orderStatus.setOrder(order);
+                orderStatus.setValue(EOrderStatus.PICKUP);
+                orderStatus.setShipper(shipper);
+                orderStatus.setStock(null);
+                orderStatus.setCreated_by(shipper.getId());
+                orderStatusRepository.save(orderStatus);
+                response.setStatusCode("200");
+                response.getMessage().setTitle("successfully");
+                response.setData(orderStatus);
+            }
+        }catch (Exception e)
+        {
+            response.setStatusCode("400");
+            response.getMessage().setTitle("Exception!!!! file OrderService, line "+e.getStackTrace()[0].getLineNumber());
+            response.setData(null);
+        }
+        return response;
+    }
+
+    public ResponseOneModel Warehousing(String order_id,String email)
+    {
+        ResponseOneModel response = new ResponseOneModel();
+        try {
+            List<OrderStatus> orderStatuses = orderStatusRepository.getOrderStatusByOrOrderById(order_id);
+            if(!orderStatuses.get(orderStatuses.size()-1).getValue().equals(EOrderStatus.SHIPPING)||
+                    !orderStatuses.get(orderStatuses.size()-1).getValue().equals(EOrderStatus.PICKUP))
+            {
+                response.setStatusCode("403");
+                response.getMessage().setTitle("not access");
+                response.setData(null);
+            }
+            else
+            {
+                Order order = orderRepository.findById(order_id).get();
+                User shipper = userService.findUserByEmail(email);
+                OrderStatus orderStatus = new OrderStatus();
+                orderStatus.setOrder(order);
+                orderStatus.setValue(EOrderStatus.IN_STOCK);
+                orderStatus.setShipper(shipper);
+                orderStatus.setStock(null);
+                orderStatus.setCreated_by(shipper.getId());
+                orderStatusRepository.save(orderStatus);
+                response.setStatusCode("200");
+                response.getMessage().setTitle("successfully");
+                response.setData(orderStatus);
+            }
+        }catch (Exception e)
+        {
+            response.setStatusCode("400");
+            response.getMessage().setTitle("Exception!!!! file OrderService, line "+e.getStackTrace()[0].getLineNumber());
+            response.setData(null);
+        }
         return response;
     }
 

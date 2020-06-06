@@ -23,6 +23,7 @@ public class ItemService {
         ResponseBaseModel response = new ResponseBaseModel();
         try
         {
+            Item item1 = new Item();
             Item item = itemRepository.findByCode(request.getCode());
             if(item==null)
             {

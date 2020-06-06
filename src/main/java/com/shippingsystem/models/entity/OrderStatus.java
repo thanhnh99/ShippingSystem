@@ -18,6 +18,12 @@ public class OrderStatus extends BaseModel {
     @Column
     private EOrderStatus value;
 
+    @Column
+    private boolean confirmed = false;
+
+    @Column
+    private String confirmedBy = null;
+
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
