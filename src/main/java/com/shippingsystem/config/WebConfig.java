@@ -44,7 +44,8 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                         "/user/forgot-password", "/user/register",
                         "/verifying-email", "/user/verifying-reset-password",
                         "/public/**","/order/**","/payment").permitAll()
-                .antMatchers("/stock/**").hasRole("ADMIN")
+                .antMatchers("/stock/**", "/item/**").hasAnyAuthority("ADMIN")
+                .antMatchers("/order/**").hasAnyAuthority("USER")
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()

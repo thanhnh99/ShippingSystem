@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 @Entity
 @Table
@@ -30,6 +31,9 @@ public class Stock extends BaseModel{
     @Column
     private double acreage;
 
+    @Column
     private long totalOrder;
 
+    @OneToMany(mappedBy= "stock", cascade = CascadeType.ALL)
+    private Collection<Order> orders;
 }

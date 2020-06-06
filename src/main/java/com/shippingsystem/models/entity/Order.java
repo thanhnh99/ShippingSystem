@@ -55,7 +55,7 @@ public class Order extends BaseModel {
     @JoinColumn(name = "item_id")
     private Item item;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @ManyToOne
     private Stock stock;
 
     public Order (OrderRequest orderRequest)

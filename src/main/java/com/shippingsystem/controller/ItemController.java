@@ -21,7 +21,7 @@ public class ItemController {
     {
         ResponseListModel response = new ResponseListModel();
         response = itemService.getAll();
-
+        http://localhost:5000/order
         if(response.getStatusCode().equals("200")) return ResponseEntity.ok().body(response);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 

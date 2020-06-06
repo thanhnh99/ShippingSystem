@@ -17,7 +17,7 @@ public class StockController {
     private StockService stockService;
 
     @PostMapping("")
-    public ResponseEntity addNewStock(AddNewStockRequest request) {
+    public ResponseEntity addNewStock(@RequestBody AddNewStockRequest request) {
         ResponseBaseModel response = new ResponseBaseModel();
         response = stockService.addNewStock(request);
 
@@ -37,7 +37,7 @@ public class StockController {
     }
 
     @GetMapping("{stock_id}/orders")
-    public  ResponseEntity getAllOrderInStock(@PathVariable(name = "stock_id") Long stockId)
+    public  ResponseEntity getAllOrderInStock(@PathVariable(name = "stock_id") String stockId)
     {
         ResponseListModel response = stockService.getAllOrderInStock(stockId);
         if(response.getStatusCode().equals("200"))

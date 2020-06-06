@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface IStockRepository extends JpaRepository<Stock, String> {
     @Query("SELECT  o from Order o JOIN o.orderStatuses os join os.stock st where st.id=?1")
-    public Order findOrderByStockId(Long stockId);
+    public Order findOrderByStockId(String stockId);
 }

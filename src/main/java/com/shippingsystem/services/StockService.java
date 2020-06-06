@@ -27,7 +27,7 @@ public class StockService {
                                    request.getAddress(),
                                    true,
                                    request.getAcreage(),
-                                   request.getTotalOrder(),
+                                   0,
                                    null);
 
         newStock.setCreated_at(new Date());
@@ -99,23 +99,14 @@ public class StockService {
         return response;
     }
 
-    public ResponseListModel getAllOrderInStock(Long stockId)
+    public ResponseListModel getAllOrderInStock(String  stockId)
     {
         ResponseListModel response = new ResponseListModel();
         try{
             Order orders = stockRepository.findOrderByStockId(stockId);
-//            if(orders.size()>0)
-//            {
                 response.setStatusCode("200");
                 response.getMessage().setTitle("StockStatus.SUCCESSFULLY");
-//                response.setData(orders);
-//            }
-//            else
-//            {
-//                response.setStatusCode("404");
-//                response.getMessage().setTitle("StockStatus.STOCK_EMPTY");
-//                response.setData(null);
-//            }
+
         } catch (DataIntegrityViolationException e) {
             response.setStatusCode("404");
             response.getMessage().setTitle("StockStatus.FOREIGN_KEY_CONSTRAINT_FAILS!_CAN_NOT_GET");

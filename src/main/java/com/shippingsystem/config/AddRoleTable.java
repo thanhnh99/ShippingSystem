@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Configuration
 public class AddRoleTable {
@@ -32,6 +31,7 @@ public class AddRoleTable {
         if(userRepository.findByEmail("admin@gmail.com") == null) {
             Role role = roleRepository.getFirstByRoleName("ADMIN");
             User admin = new User("admin@gmail.com", "ADMIN", "1234", "HANOI",role);
+            admin.setEnable(true);
             role.getUsers().add(admin);
             userRepository.save(admin);
             roleRepository.save(role);
