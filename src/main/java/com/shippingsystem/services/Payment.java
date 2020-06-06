@@ -7,15 +7,18 @@ import com.mservice.allinone.processor.allinone.CaptureMoMo;
 import com.mservice.allinone.processor.allinone.QueryStatusTransaction;
 import com.mservice.shared.constants.Parameter;
 import com.mservice.shared.sharedmodels.Environment;
+import com.mservice.shared.sharedmodels.HttpResponse;
 import com.mservice.shared.sharedmodels.PartnerInfo;
 import com.mservice.shared.utils.Encoder;
 import com.shippingsystem.Enum.EOrderStatus;
 import com.shippingsystem.models.entity.Order;
 import com.shippingsystem.models.entity.OrderStatus;
+import com.shippingsystem.models.request.IpnMomo;
 import com.shippingsystem.repository.IOrderStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
 import java.nio.charset.StandardCharsets;
@@ -45,21 +48,15 @@ public class Payment {
 
             String orderInfo = "Pay With MoMo";
             String returnURL = "http://localhost:8083/order/payment/response/"+ order.getId()+"/"+requestId;
-            String notifyURL = "http://localhost:8083/order/payment/response";
+            String notifyURL = "https://bc81babaaae0.ngrok.io/order/payment/response";
             String extraData = "";
             String bankCode = "SML";
 
             Environment environment = new Environment("https://test-payment.momo.vn/gw_payment/transactionProcessor",devInfo, Environment.EnvTarget.DEV);
 
-
-//      Remember to change the IDs at enviroment.properties file
-
-//        Payment Method- Phương thức thanh toán
             CaptureMoMoResponse captureMoMoResponse = CaptureMoMo.process(environment, orderId, requestId, Long.toString(amount), orderInfo, returnURL,notifyURL,extraData);
             payUrl = captureMoMoResponse.getPayUrl();
 
-////      Process Payment Result - Xử lý kết quả thanh toán
-//            PayGateResponse payGateResponse = PaymentResult.process(environment,new PayGateResponse());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -67,7 +64,7 @@ public class Payment {
     }
 
     //Todo: payment process
-    public  void IPNProcess(PayGateResponse response) {
+    public  void IPNProcess(IpnMomo response) {
         try {
             System.out.println("Xu li IPN");
             if(response.getErrorCode()==0)
