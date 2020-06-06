@@ -315,7 +315,7 @@ public class OrderService {
     {
         ResponseOneModel response = new ResponseOneModel();
         try {
-            List<OrderStatus> orderStatuses = orderStatusRepository.getOrderStatusByOrOrderById(order_id);
+            List<OrderStatus> orderStatuses = orderStatusRepository.getOrderStatusByOrderId(order_id);
             if(orderStatuses.get(orderStatuses.size()-1).getValue().equals(EOrderStatus.SHIPPING)||
                     orderStatuses.get(orderStatuses.size()-1).getValue().equals(EOrderStatus.CANCEL)||
                     orderStatuses.get(orderStatuses.size()-1).getValue().equals(EOrderStatus.PICKUP)||
@@ -353,7 +353,7 @@ public class OrderService {
     {
         ResponseOneModel response = new ResponseOneModel();
         try {
-            List<OrderStatus> orderStatuses = orderStatusRepository.getOrderStatusByOrOrderById(order_id);
+            List<OrderStatus> orderStatuses = orderStatusRepository.getOrderStatusByOrderId(order_id);
             if(!orderStatuses.get(orderStatuses.size()-1).getValue().equals(EOrderStatus.SHIPPING)||
                     !orderStatuses.get(orderStatuses.size()-1).getValue().equals(EOrderStatus.PICKUP))
             {
