@@ -47,7 +47,7 @@ public class Payment {
             long amount = 50000;
 
             String orderInfo = "Pay With MoMo";
-            String returnURL = "http://localhost:8083/order/payment/response/"+ order.getId()+"/"+requestId;
+            String returnURL = "https://shippingsys.herokuapp.com/order/payment/response/"+ order.getId()+"/"+requestId;
             String notifyURL = "https://bc81babaaae0.ngrok.io/order/payment/response";
             String extraData = "";
             String bankCode = "SML";
