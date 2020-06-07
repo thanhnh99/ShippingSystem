@@ -32,6 +32,9 @@ public class User extends BaseModel {
     @Column
     private boolean isEnable;
 
+    @Column
+    private String phone;
+
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Collection<Order> orders;
@@ -42,13 +45,14 @@ public class User extends BaseModel {
     @ManyToMany(mappedBy = "users")
     private Collection<Role> roles;
 
-    public User(String email, String username, String password, String adress,Role role) {
+    public User(String email, String username, String password, String adress,Role role, String phone) {
         this.email = email;
         this.username = username;
         this.password = password;
         this.address = adress;
         this.roles = new ArrayList<Role>();
         this.roles.add(role);
+        this.phone = phone;
     }
 
     public List<GranAuthorityImpl> getRoles(){

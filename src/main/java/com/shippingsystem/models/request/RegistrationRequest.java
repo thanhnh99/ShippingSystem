@@ -13,4 +13,6 @@ public class RegistrationRequest {
     String password;
     @NotNull
     String address;
+    @NotNull
+    String phone;
 }

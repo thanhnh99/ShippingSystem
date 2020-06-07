@@ -29,9 +29,9 @@ public class RegistrationService {
         else return false;
     }
 
-    public void createNewAccount(String email, String password, String username, String adress){
+    public void createNewAccount(String email, String password, String username, String adress, String phone){
         Role role = roleRepository.getFirstByRoleName("USER");
-        User user = new User(email, username, password, adress,role);
+        User user = new User(email, username, password, adress,role, phone);
         user.setEnable(false);
         role.getUsers().add(user);
         userRepository.save(user);

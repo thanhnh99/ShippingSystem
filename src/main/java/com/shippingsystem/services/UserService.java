@@ -85,7 +85,8 @@ public class UserService {
                 registrationService.createNewAccount(request.getEmail(),
                         request.getUsername(),
                         request.getPassword(),
-                        request.getAddress());
+                        request.getAddress(),
+                        request.getPhone());
             }
 
             if(!sendingTokenToVerifyEmail(request.getEmail())) {
