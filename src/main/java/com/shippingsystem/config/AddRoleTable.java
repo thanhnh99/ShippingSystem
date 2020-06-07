@@ -30,7 +30,7 @@ public class AddRoleTable {
 
         if(userRepository.findByEmail("admin@gmail.com") == null) {
             Role role = roleRepository.getFirstByRoleName("ADMIN");
-            User admin = new User("admin@gmail.com", "ADMIN", "1234", "HANOI",role);
+            User admin = new User("admin@gmail.com", "ADMIN", "1234", "HANOI",role, "012345678");
             admin.setEnable(true);
             role.getUsers().add(admin);
             userRepository.save(admin);
