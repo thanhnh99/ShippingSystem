@@ -1,4 +1,4 @@
-package com.shippingsystem.controller;
+package com.shippingsystem.controller.commonApi;
 
 import com.shippingsystem.models.auth.ResponseStatus;
 import com.shippingsystem.services.VerificationTokenRegistrationService;

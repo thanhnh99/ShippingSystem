@@ -17,4 +17,5 @@ public class ResponseStatus {
     public static final String ACCEPT = "ACCEPT";
     public static final String SAVED_INFORMATION = "SAVED INFORMATION";
     public static final String HAVE_EXIST_ACCOUNT = "HAVE EXIST ACCOUNT";
+    public static final String WRONG_PASSWORD = "WRONG PASSWORD";
 }

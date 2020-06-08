@@ -1,4 +1,4 @@
-package com.shippingsystem.controller;
+package com.shippingsystem.controller.commonApi;
 
 import com.shippingsystem.models.auth.ResponseStatus;
 import com.shippingsystem.models.request.LoginRequest;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("common")
 public class UserController {
 
     private final UserService userService;

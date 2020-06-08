@@ -1,4 +1,4 @@
-package com.shippingsystem.controller;
+package com.shippingsystem.controller.commonApi;
 
 import com.shippingsystem.models.request.ItemRequest;
 import com.shippingsystem.models.response.ResponseBaseModel;
@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("item")
+@RequestMapping("common/item")
 public class ItemController {
 
     @Autowired
@@ -25,26 +25,5 @@ public class ItemController {
         if(response.getStatusCode().equals("200")) return ResponseEntity.ok().body(response);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 
-    }
-
-    @PostMapping("")
-    public  ResponseEntity addItem(@RequestBody ItemRequest itemRequest)
-    {
-        ResponseBaseModel response = new ResponseBaseModel();
-        response = itemService.addItem(itemRequest);
-
-        if(response.getStatusCode().equals("200")) return ResponseEntity.ok(response);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-
-    }
-
-
-    @DeleteMapping("{item_id}")
-    public ResponseEntity deleteItem(@PathVariable(name = "item_id") String itemId)
-    {
-        ResponseBaseModel response = new ResponseBaseModel();
-        response = itemService.deleteItem(itemId);
-        if(response.getStatusCode().equals("200")) return ResponseEntity.ok().body(response);
-        return ResponseEntity.status(203).body(response);
     }
 }
