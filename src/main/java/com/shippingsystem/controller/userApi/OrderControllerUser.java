@@ -60,11 +60,11 @@ public class OrderControllerUser {
     }
 
     @PostMapping
-    public ResponseEntity addOrder(@RequestBody OrderRequest newOrder)
+    public ResponseEntity addOrder(@RequestBody OrderRequest newOrder,HttpServletRequest authen)
     {
         ResponseBaseModel response = new ResponseBaseModel();
 
-        response = orderService.addOrder(newOrder);
+        response = orderService.addOrder(newOrder,authen);
 
         if(response.getStatusCode().equals("200")) return ResponseEntity.ok(response);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
@@ -91,6 +91,8 @@ public class OrderControllerUser {
         return ResponseEntity.status(203).body(response);
     }
 
+
+
     @GetMapping("/payment/response/{order_id}/{request_id}")
     public ResponseEntity paymentResponse(@PathVariable String order_id,@PathVariable String request_id)
     {
@@ -113,5 +115,6 @@ public class OrderControllerUser {
         if(response.getStatusCode().equals("200")) return ResponseEntity.ok().body(response);
         return ResponseEntity.status(203).body(response);
     }
+
 
 }

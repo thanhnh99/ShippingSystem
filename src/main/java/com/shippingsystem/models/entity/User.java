@@ -1,5 +1,6 @@
 package com.shippingsystem.models.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.shippingsystem.models.auth.GranAuthorityImpl;
 import lombok.AllArgsConstructor;
 import lombok.Data;

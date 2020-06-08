@@ -1,5 +1,6 @@
 package com.shippingsystem.models.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.shippingsystem.models.request.OrderRequest;
 import com.shippingsystem.repository.IItemRepository;
 import lombok.*;
@@ -17,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity//Đánh dấu đây là table trong db
 @Table//config db. Không có gì mặc định là defaule
-
+@JsonIgnoreProperties("user")
 public class Order extends BaseModel {
 
     @Column

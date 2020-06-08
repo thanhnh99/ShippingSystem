@@ -4,20 +4,17 @@ import com.shippingsystem.models.response.ResponseOneModel;
 import com.shippingsystem.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/order")
+@RequestMapping("common/order")
 
 public class OrderController {
     @Autowired
     OrderService orderService;
 
-    @GetMapping("{order_id}")
-    public ResponseEntity getOrder(@PathVariable String orderId)
+    @GetMapping()
+    public ResponseEntity getOrder(@RequestParam(name = "order_id",required = true) String orderId)
     {
         ResponseOneModel response = orderService.findOneById(orderId);
         if(response.getStatusCode().equals("200"))

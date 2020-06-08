@@ -40,12 +40,13 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                 .cors()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/user/login",
-                        "/user/forgot-password", "/user/register",
-                        "/verifying-email", "/user/verifying-reset-password",
-                        "/public/**","/order/**","/payment").permitAll()
-                .antMatchers("/stock/**", "/item/**").hasAnyAuthority("ADMIN")
-                .antMatchers("/order/**").hasAnyAuthority("USER")
+                .antMatchers("/login",
+                        "/forgot-password", "/register",
+                        "/verifying-email", "/verifying-reset-password",
+                        "/public/**","/order/**","/payment","/common/**").permitAll()
+                .antMatchers("/admin/**").hasAnyAuthority("ADMIN")
+                .antMatchers("/user/**").hasAnyAuthority("USER")
+                .antMatchers("/shipper/**").hasAnyAuthority("SHIPPER")
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()

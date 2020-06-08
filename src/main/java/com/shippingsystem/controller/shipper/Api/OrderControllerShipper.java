@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/shipper/order")
+@RequestMapping("shipper/order")
 
 public class OrderControllerShipper {
     @Autowired
@@ -40,7 +40,7 @@ public class OrderControllerShipper {
         return ResponseEntity.status(203).body(response);
     }
 
-    @GetMapping("responsibleAble")
+    @GetMapping("/responsibleAble")
     public ResponseEntity getOrderResponsibleAble(@RequestParam(value = "sendAddress", required = false)String sendAddress,
                                                   @RequestParam(value = "receiveAddress", required = false)String receiveAddress)
     {
@@ -58,7 +58,7 @@ public class OrderControllerShipper {
         return ResponseEntity.status(203).body(response);
     }
 
-    @PostMapping("responsibleAble")
+    @PostMapping("/responsibleAble")
     public ResponseEntity ResponsibleOrder(String orderId,HttpServletRequest request )
     {
         ResponseOneModel response = new ResponseOneModel();

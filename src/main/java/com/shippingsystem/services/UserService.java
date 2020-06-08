@@ -1,21 +1,25 @@
 package com.shippingsystem.services;
 
-import com.shippingsystem.models.auth.PasswordResetToken;
-import com.shippingsystem.models.auth.ResponseStatus;
-import com.shippingsystem.models.auth.UserDetailCustom;
-import com.shippingsystem.models.auth.VerificationToken;
+import com.shippingsystem.models.auth.*;
+import com.shippingsystem.models.entity.Role;
 import com.shippingsystem.models.entity.User;
 import com.shippingsystem.models.request.*;
 import com.shippingsystem.models.response.*;
+import com.shippingsystem.repository.IRoleRepository;
 import com.shippingsystem.repository.IUserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Collection;
+import java.util.List;
 
 @Service
 public class UserService {
+    @Autowired
+    IRoleRepository roleRepository;
 
     private final AuthenticationManager authenticationManager;
     private final IUserRepository userRepository;
@@ -47,12 +51,16 @@ public class UserService {
         LoginResponse response = new LoginResponse();
         final UserDetailCustom userDetails = loadUserByEmail(loginRequest.getEmail());
 
-        if(userDetails == null
-                || !loginRequest.getPassword().equals(userDetails.getPassword())){
+        if(userDetails == null){
 
             response.setStatus(ResponseStatus.HAVE_NOT_ACCOUNT);
 
-        } else {
+        }
+        else if(!loginRequest.getPassword().equals(userDetails.getPassword()))
+        {
+            response.setStatus(ResponseStatus.WRONG_PASSWORD);
+        }
+        else {
             if(userDetails.getUser().isEnable()){
                 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                         loginRequest.getEmail(),
@@ -204,5 +212,25 @@ public class UserService {
     }
     public void saveUser(User user){
         userRepository.save(user);
+    }
+
+    public ResponseBaseModel addNewShipper(String userid)
+    {
+        ResponseBaseModel response = new ResponseBaseModel();
+        try {
+            User user = userRepository.getOne(userid);
+            Role role = roleRepository.getFirstByRoleName("SHIPPER");
+            role.getUsers().add(user);
+            roleRepository.save(role);
+
+            response.setStatusCode("200");
+            response.getMessage().setTitle("successfully");
+        }catch (Exception e)
+        {
+            e.toString();
+            response.setStatusCode("400");
+            response.getMessage().setTitle("Bad request!!!! file 'UserSerVice.java' in line "+e.getStackTrace()[0].getLineNumber());
+        }
+        return response;
     }
 }

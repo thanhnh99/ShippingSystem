@@ -21,8 +21,8 @@ public class OrderStatus extends BaseModel {
     @Column
     private boolean confirmed = false;
 
-    @Column
-    private String confirmedBy = null;
+    @Column(nullable = true )
+    private String confirmedBy;
 
     @ManyToOne
     @JoinColumn(name = "order_id")

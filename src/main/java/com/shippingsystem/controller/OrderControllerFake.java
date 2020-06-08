@@ -21,6 +21,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 public class OrderControllerFake {
     @Autowired
     private OrderService orderService;
@@ -35,11 +37,11 @@ public class OrderControllerFake {
     Payment payment;
 
     @PostMapping
-    public ResponseEntity addOrder(@RequestBody OrderRequest newOrder)
+    public ResponseEntity addOrder(@RequestBody OrderRequest newOrder, HttpServletRequest authen)
     {
         ResponseBaseModel response = new ResponseBaseModel();
 
-        response = orderService.addOrder(newOrder);
+        response = orderService.addOrder(newOrder,authen);
 
         if(response.getStatusCode().equals("200")) return ResponseEntity.ok(response);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);

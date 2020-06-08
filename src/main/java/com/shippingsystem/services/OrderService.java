@@ -1,5 +1,6 @@
 package com.shippingsystem.services;
 
+import ch.qos.logback.classic.Logger;
 import com.shippingsystem.Enum.EOrderStatus;
 import com.shippingsystem.models.entity.Item;
 import com.shippingsystem.models.entity.Order;
@@ -17,7 +18,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -47,7 +50,7 @@ public class OrderService {
 
 
 
-    public ResponseBaseModel addOrder(OrderRequest orderRequest)
+    public ResponseBaseModel addOrder(OrderRequest orderRequest, HttpServletRequest authen)
     {
         ResponseBaseModel response = new ResponseBaseModel();
         ResponseOneModel<Item> itemResponse = itemService.getItemByCode(orderRequest.getItemCode());
@@ -59,44 +62,48 @@ public class OrderService {
             return response;
         }
 
-        //Create Order
-        Order order = new Order(orderRequest);
-        order.setItem(itemResponse.getData());
-        order.setPrice(BigDecimal.valueOf(10000000));
-
-        //Create a OrderStatus for Order
-        OrderStatus orderStatus = new OrderStatus();
-        orderStatus.setOrder(order);
-        orderStatus.setValue(EOrderStatus.PENDING);
-
+        final String requestTokenHeader = authen.getHeader("Authorization");
+        String jwtToken = requestTokenHeader.substring(7);
+        String email =null;
         try {
+            email = userService.getEmailFromToken(jwtToken);
+            User user = userService.findUserByEmail(email);
+
+            //Create Order
+            Order order = new Order(orderRequest);
+            order.setItem(itemResponse.getData());
+            order.setPrice(BigDecimal.valueOf(50000*itemResponse.getData().getMultiplicity()));
+            order.setUser(user);
+
+            //Save order
             orderRepository.save(order);
+
+            //Create default OrderStatus for Order
+            OrderStatus orderStatus = new OrderStatus();
+            orderStatus.setOrder(order);
+            orderStatus.setValue(EOrderStatus.PENDING);
+
+            //Save order status
+            orderStatusRepository.save(orderStatus);
+
+            //Create payment
+            String redirectLink = payment.DisplayPaymentScreen(order.getId());
+            response.setStatusCode("200");
+            response.getMessage().setTitle("successfully");
+            response.getMessage().setContent(redirectLink);
+
         }
         catch (DataIntegrityViolationException e) {
             response.setStatusCode("404");
             response.getMessage().setTitle("ItemStatus.FOREIGN_KEY_CONSTRAINT_FAILS!_CAN_NOT_SAVE");
             return response;
         }catch (EntityNotFoundException e) {
-            orderRepository.delete(order);
             response.setStatusCode("203");
             response.getMessage().setTitle("ItemStatus.FOREIGN_KEY_CONSTRAINT_FAILS!_CAN_FIND_ITEM");
+        }catch (Exception ex) {
+            Logger logger = null;
+            logger.error("failed on set user authentication", ex);
         }
-        catch (Exception e) {
-            response.setStatusCode("203");
-            response.getMessage().setTitle("Can't save order");
-        }
-        try {
-            orderStatusRepository.save(orderStatus);
-        } catch (Exception e) {
-            orderRepository.delete(order);
-            response.setStatusCode("203");
-            response.getMessage().setTitle("Can't save order");
-        }
-        //TODO : redirect to payment momo
-        String redirectLink = payment.DisplayPaymentScreen(order.getId());
-        response.setStatusCode("200");
-        response.getMessage().setTitle("successfully");
-        response.getMessage().setContent(redirectLink);
         return response;
 
     }
@@ -151,6 +158,7 @@ public class OrderService {
     {
         ResponseBaseModel response = new ResponseBaseModel();
         try {
+            List<OrderStatus> orderStatuses = orderStatusRepository.getOrderStatusByOrderId(id);
             orderRepository.deleteById(id);
         }
         catch (NullPointerException e)
@@ -267,9 +275,11 @@ public class OrderService {
             return response;
         }catch (Exception e)
         {
-            response.setStatusCode("400");
-            response.getMessage().setTitle("Bad request getOrderByEmail!!! file OrderService.java; line " +e.getStackTrace()[0].getLineNumber());
-            response.setData(null);
+//            response.setStatusCode("400");
+//            response.getMessage().setTitle("Bad request getOrderByEmail!!! file OrderService.java; line " +e.getStackTrace()[0].getLineNumber());
+//            response.setData(null);
+//            return response;
+            e.getStackTrace();
             return response;
         }
     }
@@ -279,7 +289,7 @@ public class OrderService {
     public ResponseListModel getResponsibleAbleOrder(String sendAddress, String receiveAddress)
     {
         ResponseListModel response = new ResponseListModel<>();
-        List<Order> orders = null;
+        List<Order> orders = new ArrayList<Order>();
         try {
 
             if(sendAddress == null && receiveAddress != null)
@@ -379,7 +389,7 @@ public class OrderService {
         }catch (Exception e)
         {
             response.setStatusCode("400");
-            response.getMessage().setTitle("Exception!!!! file OrderService, line "+e.getStackTrace()[0].getLineNumber());
+            response.getMessage().setTitle("Exception!!!! file OrderService, line "+e.getStackTrace()[0].getLineNumber()+e.getMessage());
             response.setData(null);
         }
         return response;
