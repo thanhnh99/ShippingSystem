@@ -160,7 +160,7 @@ public class OrderService {
     {
         ResponseBaseModel response = new ResponseBaseModel();
         try {
-            List<OrderStatus> orderStatuses = orderStatusRepository.getOrderStatusByOrderId(id);
+            List<OrderStatus> orderStatuses = orderStatusRepository.findByOrderId(id);
             orderRepository.deleteById(id);
         }
         catch (NullPointerException e)
@@ -327,8 +327,15 @@ public class OrderService {
     {
         ResponseOneModel response = new ResponseOneModel();
         try {
-            List<OrderStatus> orderStatuses = orderStatusRepository.getOrderStatusByOrderId(order_id);
-            if(orderStatuses.get(orderStatuses.size()-1).getValue().equals(EOrderStatus.SHIPPING)||
+            Order order1 = orderRepository.findById(order_id).get();
+            List<OrderStatus> orderStatuses = orderStatusRepository.findByOrderId(order_id);
+            if(orderStatuses.size()<1)
+            {
+                response.setStatusCode("40");
+                response.getMessage().setTitle("Haven't orderStatus for "+order_id);
+                response.setData(null);
+            }
+            else if(orderStatuses.get(orderStatuses.size()-1).getValue().equals(EOrderStatus.SHIPPING)||
                     orderStatuses.get(orderStatuses.size()-1).getValue().equals(EOrderStatus.CANCEL)||
                     orderStatuses.get(orderStatuses.size()-1).getValue().equals(EOrderStatus.PICKUP)||
                     orderStatuses.get(orderStatuses.size()-1).getValue().equals(EOrderStatus.COMPLETE))
@@ -365,7 +372,7 @@ public class OrderService {
     {
         ResponseOneModel response = new ResponseOneModel();
         try {
-            List<OrderStatus> orderStatuses = orderStatusRepository.getOrderStatusByOrderId(order_id);
+            List<OrderStatus> orderStatuses = orderStatusRepository.findByOrderId(order_id);
             if(!orderStatuses.get(orderStatuses.size()-1).getValue().equals(EOrderStatus.SHIPPING)||
                     !orderStatuses.get(orderStatuses.size()-1).getValue().equals(EOrderStatus.PICKUP))
             {
