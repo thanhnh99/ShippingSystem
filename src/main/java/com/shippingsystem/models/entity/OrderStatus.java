@@ -18,8 +18,8 @@ public class OrderStatus extends BaseModel {
     @Column
     private EOrderStatus value;
 
-    @Column
-    private boolean confirmed = false;
+    @Column()
+    private boolean confirmed;
 
     @Column(nullable = true )
     private String confirmedBy;

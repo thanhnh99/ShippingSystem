@@ -81,6 +81,8 @@ public class OrderService {
             //Create default OrderStatus for Order
             OrderStatus orderStatus = new OrderStatus();
             orderStatus.setOrder(order);
+            orderStatus.setConfirmed(false);
+            orderStatus.setConfirmedBy(user.getId());
             orderStatus.setValue(EOrderStatus.PENDING);
 
             //Save order status

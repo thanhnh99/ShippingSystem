@@ -72,6 +72,7 @@ public class Payment {
                 Order order = orderService.findOneById(response.getOrderId()).getData();
                 OrderStatus orderStatus = new OrderStatus();
                 orderStatus.setOrder(order);
+                orderStatus.setConfirmed(false);
                 orderStatus.setValue(EOrderStatus.PAYMENT);
                 orderStatusRepository.save(orderStatus);
             }
