@@ -5,10 +5,15 @@ import com.shippingsystem.models.entity.Order;
 import com.shippingsystem.models.entity.OrderStatus;
 import com.shippingsystem.models.entity.Stock;
 import com.shippingsystem.models.request.OrderStatusRequest;
+import com.shippingsystem.models.response.ResponseBaseModel;
+import com.shippingsystem.models.response.ResponseListModel;
 import com.shippingsystem.models.response.ResponseOneModel;
 import com.shippingsystem.repository.IOrderStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class OrderStatusService {
@@ -98,6 +103,31 @@ public class OrderStatusService {
             response.setStatusCode("203");
             response.getMessage().setTitle("Can't change order status");
         }
+        return response;
+    }
+
+    public ResponseListModel<OrderStatus> getAllOrderStatus(String orderId) {
+        ResponseListModel<OrderStatus> response = new ResponseListModel<>();
+        List<OrderStatus> orderStatusList = null;
+
+        try{
+            orderStatusList = iOrderStatusRepository.getOrderStatusByOrderId(orderId);
+        }
+        catch (Exception e) {
+            response.setStatusCode("500");
+            response.getMessage().setTitle("ERROR");
+            e.getStackTrace();
+        }
+
+        if(orderStatusList == null) {
+            response.setStatusCode("203");
+            response.getMessage().setTitle("HAVE NOT ORDER");
+        } else {
+            response.setStatusCode("200");
+            response.getMessage().setTitle("SUCCESSFUL");
+            response.setData(orderStatusList);
+        }
+
         return response;
     }
 }
