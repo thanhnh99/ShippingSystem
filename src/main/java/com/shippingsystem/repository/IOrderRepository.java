@@ -5,9 +5,11 @@ import org.aspectj.weaver.ast.Or;
 import org.omg.PortableInterceptor.ObjectReferenceFactory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface IOrderRepository extends JpaRepository<Order,String> {
 
     @Query("select o from Order o join OrderStatus os on o.id = os.order.id where os.shipper.email= email" )

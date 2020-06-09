@@ -1,23 +1,18 @@
 package com.shippingsystem.controller.userApi;
 
 import ch.qos.logback.classic.Logger;
-import com.shippingsystem.models.entity.Order;
-import com.shippingsystem.models.entity.User;
 import com.shippingsystem.models.request.IpnMomo;
 import com.shippingsystem.models.request.OrderRequest;
 import com.shippingsystem.models.response.ResponseBaseModel;
 import com.shippingsystem.models.response.ResponseListModel;
 import com.shippingsystem.models.response.ResponseOneModel;
 import com.shippingsystem.services.*;
-import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 @RestController
 @RequestMapping("/user/order")

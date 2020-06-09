@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties("orderStatus")
 public class User extends BaseModel {
 
     @Column

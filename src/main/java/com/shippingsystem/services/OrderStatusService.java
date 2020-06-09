@@ -119,7 +119,7 @@ public class OrderStatusService {
             e.getStackTrace();
         }
 
-        if(orderStatusList == null) {
+        if(orderStatusList == null || orderStatusList.size() == 0) {
             response.setStatusCode("203");
             response.getMessage().setTitle("HAVE NOT ORDER");
         } else {

@@ -12,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @Table
-@JsonIgnoreProperties("order")
+@JsonIgnoreProperties({"order","shipper"})
 public class OrderStatus extends BaseModel {
 
     @Column
