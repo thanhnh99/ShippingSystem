@@ -4,6 +4,7 @@ import com.shippingsystem.models.entity.Order;
 import com.shippingsystem.models.entity.OrderStatus;
 import com.shippingsystem.models.entity.Stock;
 import com.shippingsystem.models.auth.ResponseStatus;
+import com.shippingsystem.models.entity.User;
 import com.shippingsystem.models.request.AddNewStockRequest;
 import com.shippingsystem.models.response.ResponseBaseModel;
 import com.shippingsystem.models.response.ResponseListModel;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 
@@ -21,6 +23,8 @@ public class StockService {
 
     @Autowired
     private IStockRepository stockRepository;
+    @Autowired
+    private UserService userService;
 
     public ResponseBaseModel addNewStock(AddNewStockRequest request) {
         Stock newStock = new Stock(request.getName(),
@@ -115,6 +119,47 @@ public class StockService {
         {
             response.setStatusCode("203");
             response.getMessage().setTitle("StockStatus.CAN_NOT_GET_DATA");
+        }
+        return response;
+    }
+    public ResponseBaseModel deleteStock(String stockId)
+    {
+        ResponseBaseModel response = new ResponseBaseModel();
+        try {
+            stockRepository.deleteById(stockId);
+            response.setStatusCode("200");
+            response.getMessage().setTitle("StockStatus.SUCCESSFULLY");
+        }
+        catch (Exception e)
+        {
+            response.setStatusCode("203");
+            response.getMessage().setTitle("StockStatus.CAN_NOT_DELETE_DATA");
+        }
+        return response;
+    }
+    public  ResponseOneModel editStockInfo(AddNewStockRequest request, String stockId, HttpServletRequest authen)
+    {
+        ResponseOneModel response = new ResponseOneModel();
+        final String requestTokenHeader = authen.getHeader("Authorization");
+        String jwtToken = requestTokenHeader.substring(7);
+        String email =null;
+        try {
+            email = userService.getEmailFromToken(jwtToken);
+            User user = userService.findUserByEmail(email);
+            Stock stock = stockRepository.getOne(stockId);
+            stock.setAcreage(request.getAcreage());
+            stock.setAddress(request.getAddress());
+            stock.setName(request.getName());
+            stock.setUpdated_at(new Date());
+            stock.setUpdated_by(user.getId());
+            stockRepository.save(stock);
+
+            response.setStatusCode("200");
+            response.getMessage().setTitle("StockStatus.SUCCESSFULLY");
+        }catch (Exception e)
+        {
+            response.setStatusCode("203");
+            response.getMessage().setTitle("StockStatus.CAN_NOT_EDIT_DATA");
         }
         return response;
     }
