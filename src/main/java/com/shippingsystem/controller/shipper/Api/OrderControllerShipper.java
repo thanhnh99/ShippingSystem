@@ -59,7 +59,7 @@ public class OrderControllerShipper {
     }
 
     @PostMapping("/responsibleAble")
-    public ResponseEntity ResponsibleOrder(String orderId,HttpServletRequest request )
+    public ResponseEntity ResponsibleOrder(@RequestBody  String orderId,HttpServletRequest request )
     {
         ResponseOneModel response = new ResponseOneModel();
         try {
